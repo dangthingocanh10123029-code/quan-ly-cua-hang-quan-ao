@@ -1,0 +1,334 @@
+{
+  "success": true,
+  "data": {
+    "banners": [
+      {
+        "id": 1,
+        "name": "Bộ sưu tập mùa hè 2024",
+        "description": "Khám phá tương lai của trang phục kiến trúc",
+        "banner": "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1920",
+        "banner_url": "https://example.com/summer-collection",
+        "slug": "summer-2024",
+        "discount_type": "percentage",
+        "discount_value": 30,
+        "product_id": 1,
+        "product_name": "Summer Collection 2024"
+      }
+    ],
+    "categories": [
+      {
+        "id": 1,
+        "name": "Áo thun",
+        "slug": "ao-thun",
+        "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800",
+        "description": "Bộ sưu tập áo thun cao cấp"
+      },
+      {
+        "id": 2,
+        "name": "Phụ kiện",
+        "slug": "phu-kien",
+        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",
+        "description": "Phụ kiện thời trang"
+      },
+      {
+        "id": 3,
+        "name": "Jean",
+        "slug": "jean",
+        "image": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=600",
+        "description": "Quần jeans chất lượng"
+      },
+      {
+        "id": 4,
+        "name": "Giày",
+        "slug": "giay",
+        "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",
+        "description": "Giày thể thao, giày sneaker"
+      }
+    ],
+    "featuredProducts": [
+      {
+        "id": 1,
+        "name": "Heavyweight Tech Tee",
+        "slug": "heavyweight-tech-tee",
+        "short_description": "Áo thun cotton cao cấp 200gsm",
+        "price": 49.00,
+        "compare_price": null,
+        "stock": 50,
+        "total_sold": 125,
+        "gender": "male",
+        "is_featured": true,
+        "material": "100% Cotton",
+        "season": "All Season",
+        "category_name": "Áo thun",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
+        "alt_text": "Heavyweight Tech Tee - Grey",
+        "avg_rating": 4.5,
+        "review_count": 24
+      },
+      {
+        "id": 2,
+        "name": "Architectural Trousers",
+        "slug": "architectural-trousers",
+        "short_description": "Quần âu kiểu dáng hiện đại",
+        "price": 85.00,
+        "compare_price": 110.00,
+        "stock": 30,
+        "total_sold": 89,
+        "gender": "female",
+        "is_featured": true,
+        "material": "Polyester Blend",
+        "season": "Spring/Fall",
+        "category_name": "Quần",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400",
+        "alt_text": "Architectural Trousers - Black",
+        "avg_rating": 5.0,
+        "review_count": 12
+      },
+      {
+        "id": 3,
+        "name": "Modular Layer Hoodie",
+        "slug": "modular-layer-hoodie",
+        "short_description": "Hoodie với thiết kế module",
+        "price": 125.00,
+        "compare_price": null,
+        "stock": 20,
+        "total_sold": 156,
+        "gender": "unisex",
+        "is_featured": true,
+        "material": "French Terry",
+        "season": "All Season",
+        "category_name": "Áo hoodie",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400",
+        "alt_text": "Modular Layer Hoodie - Beige",
+        "avg_rating": 4.8,
+        "review_count": 48
+      },
+      {
+        "id": 4,
+        "name": "Sling System V1",
+        "slug": "sling-system-v1",
+        "short_description": "Túi đeo chéo công nghệ",
+        "price": 65.00,
+        "compare_price": null,
+        "stock": 15,
+        "total_sold": 78,
+        "gender": "unisex",
+        "is_featured": true,
+        "material": "Recycled Nylon",
+        "season": "All Season",
+        "category_name": "Túi & Balo",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400",
+        "alt_text": "Sling System V1 - Black",
+        "avg_rating": 5.0,
+        "review_count": 32
+      }
+    ],
+    "bestSellers": [
+      {
+        "id": 5,
+        "name": "Omni-Climate Windbreaker",
+        "slug": "omni-climate-windbreaker",
+        "price": 199.00,
+        "compare_price": null,
+        "stock": 15,
+        "total_sold": 245,
+        "gender": "male",
+        "is_featured": true,
+        "category_name": "Áo khoác",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400",
+        "avg_rating": 4.7,
+        "review_count": 89
+      },
+      {
+        "id": 6,
+        "name": "Cloud-Walk Runner X",
+        "slug": "cloud-walk-runner-x",
+        "price": 149.00,
+        "compare_price": 180.00,
+        "stock": 40,
+        "total_sold": 189,
+        "gender": "unisex",
+        "is_featured": false,
+        "category_name": "Giày",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+        "avg_rating": 4.9,
+        "review_count": 156
+      },
+      {
+        "id": 7,
+        "name": "Urban Explorer Pack",
+        "slug": "urban-explorer-pack",
+        "price": 89.00,
+        "compare_price": null,
+        "stock": 25,
+        "total_sold": 156,
+        "gender": "unisex",
+        "is_featured": true,
+        "category_name": "Túi & Balo",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+        "avg_rating": 4.6,
+        "review_count": 67
+      },
+      {
+        "id": 8,
+        "name": "Duality Tech Hoodie",
+        "slug": "duality-tech-hoodie",
+        "price": 129.00,
+        "compare_price": null,
+        "stock": 35,
+        "total_sold": 98,
+        "gender": "male",
+        "is_featured": false,
+        "category_name": "Áo hoodie",
+        "brand_name": "CLOTH",
+        "image_url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400",
+        "avg_rating": 4.8,
+        "review_count": 45
+      }
+    ],
+    "flashSales": {
+      "products": [
+        {
+          "id": 9,
+          "name": "Flux Technical Parka",
+          "slug": "flux-technical-parka",
+          "price": 120.00,
+          "compare_price": 200.00,
+          "stock": 15,
+          "total_sold": 67,
+          "gender": "male",
+          "is_featured": false,
+          "category_name": "Áo khoác",
+          "brand_name": "CLOTH",
+          "image_url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400",
+          "avg_rating": 4.5,
+          "review_count": 24
+        },
+        {
+          "id": 10,
+          "name": "Combat Leather Boots",
+          "slug": "combat-leather-boots",
+          "price": 150.00,
+          "compare_price": 200.00,
+          "stock": 8,
+          "total_sold": 45,
+          "gender": "male",
+          "is_featured": false,
+          "category_name": "Giày",
+          "brand_name": "CLOTH",
+          "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+          "avg_rating": 4.8,
+          "review_count": 12
+        },
+        {
+          "id": 11,
+          "name": "Aero-Flow Shorts",
+          "slug": "aero-flow-shorts",
+          "price": 45.00,
+          "compare_price": 90.00,
+          "stock": 25,
+          "total_sold": 123,
+          "gender": "unisex",
+          "is_featured": true,
+          "category_name": "Quần",
+          "brand_name": "CLOTH",
+          "image_url": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400",
+          "avg_rating": 4.2,
+          "review_count": 48
+        }
+      ],
+      "timer": {
+        "hours": 2,
+        "minutes": 45,
+        "seconds": 30
+      },
+      "stats": {
+        "products_saved": 3,
+        "max_discount": 50,
+        "min_discount": 25
+      }
+    },
+    "brands": [
+      { "id": 1, "name": "NIKE", "slug": "nike", "logo": null, "description": null, "country": "USA" },
+      { "id": 2, "name": "ADIDAS", "slug": "adidas", "logo": null, "description": null, "country": "Germany" },
+      { "id": 3, "name": "ZARA", "slug": "zara", "logo": null, "description": null, "country": "Spain" },
+      { "id": 4, "name": "H&M", "slug": "hm", "logo": null, "description": null, "country": "Sweden" },
+      { "id": 5, "name": "UNIQLO", "slug": "uniqlo", "logo": null, "description": null, "country": "Japan" },
+      { "id": 6, "name": "GUCCI", "slug": "gucci", "logo": null, "description": null, "country": "Italy" }
+    ],
+    "reviews": [
+      {
+        "id": 1,
+        "product_id": 1,
+        "rating": 5,
+        "title": "Chất lượng tuyệt vời",
+        "content": "Áo mặc rất thoải mái, chất vải tốt, giao hàng nhanh. Sẽ mua thêm sản phẩm khác.",
+        "created_at": "2024-01-15T10:30:00Z",
+        "product_name": "Heavyweight Tech Tee",
+        "product_slug": "heavyweight-tech-tee",
+        "product_image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200",
+        "user_name": "Nguyễn Văn A"
+      },
+      {
+        "id": 2,
+        "product_id": 2,
+        "rating": 4,
+        "title": "Hài lòng",
+        "content": "Quần đẹp, kiểu dáng hiện đại. Sẽ mua thêm.",
+        "created_at": "2024-01-10T14:20:00Z",
+        "product_name": "Architectural Trousers",
+        "product_slug": "architectural-trousers",
+        "product_image": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=200",
+        "user_name": "Trần Thị B"
+      },
+      {
+        "id": 3,
+        "product_id": 3,
+        "rating": 5,
+        "title": "Tuyệt vời",
+        "content": "Hoodie ấm, thiết kế đẹp. Mặc rất vừa.",
+        "created_at": "2024-01-05T09:15:00Z",
+        "product_name": "Modular Layer Hoodie",
+        "product_slug": "modular-layer-hoodie",
+        "product_image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=200",
+        "user_name": "Lê Văn C"
+      }
+    ],
+    "news": [
+      {
+        "id": 1,
+        "title": "Tương lai của những đường may cắt bằng Laser",
+        "slug": "tuong-lai-duong-may-cat-laser",
+        "summary": "Khám phá cách tự động hóa robot đang định nghĩa lại độ chính xác của cấu trúc thời trang kiến trúc.",
+        "thumbnail": "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600",
+        "category": "Bền vững",
+        "published_at": "2024-01-20T08:00:00Z"
+      },
+      {
+        "id": 2,
+        "title": "Giao điểm: Công năng & Hình thái",
+        "slug": "giao-diem-cong-nang-hinh-thai",
+        "summary": "Nhà thiết kế chính của chúng tôi thảo luận về sự cân bằng giữa túi ưu tiên tiện dụng và kiểu dáng sàn diễn cao cấp.",
+        "thumbnail": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600",
+        "category": "Phòng thí nghiệm thiết kế",
+        "published_at": "2024-01-15T10:00:00Z"
+      },
+      {
+        "id": 3,
+        "title": "Tính linh động đô thị năm 2024",
+        "slug": "tinh-linh-dong-do-thi-2024",
+        "summary": "Tại sao trang phục kỹ thuật đang trở thành đồng phục hàng ngày cho những người du mục kỹ thuật số hiện đại.",
+        "thumbnail": "https://images.unsplash.com/photo-1514580428313-1a8b7c43b55e?w=600",
+        "category": "Văn hóa",
+        "published_at": "2024-01-10T12:00:00Z"
+      }
+    ]
+  }
+}

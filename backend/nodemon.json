@@ -1,0 +1,14 @@
+{
+  "watch": ["src"],
+  "ext": "js,json",
+  "ignore": ["node_modules", "uploads"],
+  "delay": 1500,
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "restartable": "rs",
+  "verbose": false,
+  "events": {
+    "crash": "echo 'Server crashed, waiting for file changes...'"
+  }
+}

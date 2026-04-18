@@ -1,0 +1,520 @@
+<html class="light" lang="vi"><head></head><body class="bg-surface text-on-surface overflow-x-hidden">```html
+
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CLOTH | Technical Gallery E-commerce</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#834f00",
+                    "error": "#ba1a1a",
+                    "surface": "#faf8ff",
+                    "secondary-container": "#cbcefe",
+                    "on-tertiary-fixed-variant": "#673d00",
+                    "tertiary-fixed": "#ffddbb",
+                    "on-secondary-fixed-variant": "#3f446b",
+                    "primary": "#4450b7",
+                    "outline-variant": "#c6c5d5",
+                    "surface-variant": "#dae2fd",
+                    "on-tertiary-fixed": "#2b1700",
+                    "inverse-primary": "#bdc2ff",
+                    "on-surface": "#131b2e",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "on-background": "#131b2e",
+                    "outline": "#767684",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#4854bb",
+                    "surface-container-low": "#f2f3ff",
+                    "on-secondary-container": "#52577f",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#dfe0ff",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d2d9f4",
+                    "on-tertiary-container": "#fffaf8",
+                    "on-primary-fixed": "#000965",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#2e3aa2",
+                    "inverse-surface": "#283044",
+                    "on-primary": "#ffffff",
+                    "background": "#faf8ff",
+                    "surface-container": "#eaedff",
+                    "secondary": "#575b84",
+                    "on-secondary-fixed": "#13183d",
+                    "primary-container": "#5e6ad2",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#454652",
+                    "on-primary-container": "#fdfaff",
+                    "inverse-on-surface": "#eef0ff",
+                    "tertiary-container": "#a56500",
+                    "secondary-fixed-dim": "#c0c3f2",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb867",
+                    "surface-container-highest": "#dae2fd",
+                    "secondary-fixed": "#dfe0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#faf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf8ff; color: #131b2e; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .headline-font { font-family: 'Space Grotesk', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl transition-all duration-300">
+<nav class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto font-['Space_Grotesk'] tracking-tight">
+<div class="flex items-center gap-12">
+<a class="text-2xl font-bold tracking-tighter text-slate-900 dark:text-slate-50" href="#">CLOTH</a>
+<div class="hidden md:flex gap-8 items-center h-full">
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 hover:opacity-70 transition-opacity" href="#">Nam</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 hover:opacity-70 transition-opacity" href="#">Nữ</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 hover:opacity-70 transition-opacity" href="#">Trẻ em</a>
+<a class="text-red-600 dark:text-red-500 font-bold border-b-2 border-red-600 hover:opacity-70 transition-opacity" href="#">Giảm giá</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-full group focus-within:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 placeholder:text-on-surface-variant" placeholder="Tìm kiếm bộ sưu tập..." type="text"/>
+</div>
+<div class="flex gap-4">
+<button class="hover:opacity-70 transition-opacity text-slate-900 dark:text-slate-50">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+<button class="hover:opacity-70 transition-opacity text-slate-900 dark:text-slate-50 relative">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1 rounded-full">3</span>
+</button>
+</div>
+</div>
+</nav>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative w-full h-[870px] overflow-hidden bg-surface-container-low">
+<div class="absolute inset-0 z-0">
+<img alt="Summer Collection" class="w-full h-full object-cover" data-alt="high-fashion model in minimalist white linen outfit standing against a crisp architectural concrete wall with sharp midday shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSkG9E98EcU3D3KeCebcn5GY-6SEKpBTlTir5IoYJzUZKtbqyJIoO7jDPzDYYO-KDzCh7bwtY1t6XdLKr_cIlav5mzslZDyRC3HzRvfRN-mLBWc_PQ_T70jWr_Qvxsk4BzwvEHqnp5Mf_e12QPnFDHF5LrWejusB-KIMpiyBYw0FXfGp_N-s9h7k9ZUBvNdfqsX6mJs5ozvq9Su_qB89REx5xiYDwh3Fg8-d7W7dmZtlHKngt0lHi8tFjq_fVyINSkwT_ZV_pzzo4"/>
+<div class="absolute inset-0 bg-gradient-to-r from-surface/40 to-transparent"></div>
+</div>
+<div class="relative z-10 flex flex-col justify-center h-full px-8 max-w-screen-2xl mx-auto">
+<span class="label-sm uppercase tracking-[0.2em] text-primary mb-4 font-medium">Hàng Mới Về</span>
+<h1 class="headline-font text-6xl md:text-8xl font-bold tracking-tighter leading-none mb-6 max-w-2xl">BỘ SƯU TẬP<br/>MÙA HÈ 2024</h1>
+<p class="text-lg md:text-xl text-on-surface-variant mb-10 max-w-lg leading-relaxed">Độ chính xác kỹ thuật kết hợp với thẩm mỹ cao cấp. Khám phá tương lai của trang phục kiến trúc.</p>
+<div class="flex gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-10 py-4 rounded-lg font-medium hover:opacity-90 transition-all flex items-center gap-2 group">
+                        Mua Ngay
+                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Indicators -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3">
+<div class="h-1 w-12 bg-primary"></div>
+<div class="h-1 w-12 bg-on-surface/20"></div>
+<div class="h-1 w-12 bg-on-surface/20"></div>
+</div>
+</section>
+<!-- Category Grid: Asymmetric Bento Style -->
+<section class="py-24 px-8 max-w-screen-2xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-[800px]">
+<div class="md:col-span-2 md:row-span-2 relative group overflow-hidden bg-surface-container">
+<img alt="Men's Collection" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="editorial shot of men's technical streetwear, sleek black jacket with cargo pockets and matte finish" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQOsIXmKoUKe_-O8p5Kasjtugn7LMzD4alQt70-yJbh2rBufVydMVfnjuDO05bG7Sm3fevwKFBoCtJbG9KyjrLZ0NwSyuAppPEz2pTLYtA4kZub6Kd32HmiP_d4uj_lELiqG3bIhp_Vj9qp9rCHyy_t03jJt-V5jfRlWjEhR6KIC85A_buSBs5RSmkXCQ-O5TbkwcyGx-JfHKX3d9rGjMHo4t9Yq36-OQ_ePPySJAVq-WZjnmRGaQc4NsdXKmbMSLy0o6qamKmy7k"/>
+<div class="absolute inset-0 bg-black/10"></div>
+<div class="absolute bottom-10 left-10 text-white">
+<h3 class="headline-font text-3xl font-bold mb-2">Áo thun</h3>
+<a class="underline underline-offset-8 decoration-1 hover:decoration-2 transition-all" href="#">Khám phá bộ sưu tập</a>
+</div>
+</div>
+<div class="md:col-span-2 md:row-span-1 relative group overflow-hidden bg-surface-container">
+<img alt="Women's Collection" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="modern luxury women's accessories, designer handbag on a pedestal with minimalist studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD192kMPAnUTxEpjbjLR5l4r3mfV1VqDgNNbG0oBmLSp7-UkHgecuqIpmsKUX3b3BOediFYNs759KU0LBGtYvyblQVQCv8he9ejOwm4ub5XnvKqjI7mz-AG4By_ztAAITlpZZRom0domknXAabSr7yuXrDuSpOoeYTQ9lTn4v05BXdee-oi71g6z_B2lx4sm6C9PVm_-bJSRUzFQsrhmqbIDBLzFKMQNl95uzk1WFA-s97_DkcvuhPywkOC0awo0ZMQ6JvtyP0CqcE"/>
+<div class="absolute bottom-10 left-10 text-white">
+<h3 class="headline-font text-3xl font-bold mb-2">Phụ kiện</h3>
+<a class="underline underline-offset-8 decoration-1" href="#">Mua ngay</a>
+</div>
+</div>
+<div class="md:col-span-1 md:row-span-1 relative group overflow-hidden bg-surface-container">
+<img alt="Jean" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="close-up texture of high-quality raw denim jeans with focus on metallic hardware and stitching" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0Bw8-l0BOUZCDfQdLz1BxbqrlPYT6fQLgdFGYRZZJgT_6QvWBS2H_jIHDm25KAQd4u5hiSmVQou1kjX7iLZkxMHHkvOHpxrt6wi54diOLUKdYprdnx-xoiZptRIhukvn_0_bcJbBljAqd42rpZS7C68ydKsbp9xppn4Ht1JnbXAgWDH2onNIhl6ee7wpB1wAY_zuQlIwQX50IkQwtosMLrbutKaW8FiaB2EI-XoAApENTfLUsQ5vsL-7Ys8qM-qjJZ0ocDukEnuc"/>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="headline-font text-xl font-bold mb-1">Jean</h3>
+<a class="text-sm border-b border-white pb-1" href="#">Xem tất cả</a>
+</div>
+</div>
+<div class="md:col-span-1 md:row-span-1 relative group overflow-hidden bg-surface-container">
+<img alt="Giày" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="clean white minimalist sneakers on a glass surface with soft blue ambient reflection" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGCwdy6wm3mvptF8XrKKMs1ry7DxE3HPvuOJc5GdOzKHlj_72xHTjkZMaqvTI57WlBgAQWpXQHcK440_muZ8HOhiQtqDBbZjTrR4S_lbJNKcIay4t1r-IfsLQ5fIhCMvlNx36ESb3DLk9rWbkWuQL7_pLdmf3gMsEFBwqvvAjpfalu8KqPTmQZxZPXLhb7loEC482i_wCv6IWxZBz0-lC5V3a59tpMMojUYrhzZKPjnwGmyFdCOlkg9vor2gKpCf5Rdvo-8ZV75sE"/>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="headline-font text-xl font-bold mb-1">Giày</h3>
+<a class="text-sm border-b border-white pb-1" href="#">Khám phá</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Flash Sale: Dark High Contrast -->
+<section class="bg-on-surface text-surface py-20 overflow-hidden">
+<div class="max-w-screen-2xl mx-auto px-8 flex flex-col md:flex-row items-center gap-12">
+<div class="md:w-1/3">
+<span class="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 block">Thời gian có hạn</span>
+<h2 class="headline-font text-5xl font-bold mb-8">KHUYẾN MÃI CHỚP NHOÁNG</h2>
+<div class="flex gap-4 mb-8">
+<div class="bg-surface-container-highest/10 border border-white/10 p-4 rounded-lg text-center w-20">
+<span class="text-3xl font-bold block">00</span>
+<span class="text-[10px] uppercase text-on-surface-variant">Giờ</span>
+</div>
+<div class="bg-surface-container-highest/10 border border-white/10 p-4 rounded-lg text-center w-20">
+<span class="text-3xl font-bold block">12</span>
+<span class="text-[10px] uppercase text-on-surface-variant">Phút</span>
+</div>
+<div class="bg-surface-container-highest/10 border border-white/10 p-4 rounded-lg text-center w-20">
+<span class="text-3xl font-bold block">45</span>
+<span class="text-[10px] uppercase text-on-surface-variant">Giây</span>
+</div>
+</div>
+<button class="border border-white/30 hover:bg-white hover:text-on-surface transition-colors px-8 py-3 rounded font-medium">Xem tất cả ưu đãi</button>
+</div>
+<div class="md:w-2/3 flex gap-6 overflow-x-auto no-scrollbar pb-8">
+<!-- Flash Sale Items -->
+<div class="min-w-[280px] group">
+<div class="relative h-[350px] mb-4 bg-white/5 overflow-hidden">
+<img alt="Sale Item" class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="professional product photography of a sleek waterproof backpack in charcoal grey" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3hDoWHPMr3uGeXEPbJ0sJ4Eoe-bN8JvIgXObUMGTpt8P2e2JJgXeSCdbCvhPj1VeEryc6Qyq-lwLQl-8ru9rSTK7PURWXNehBboRIDX7ze6cx8I1RF24ooGYHsYKpXXgkcn5hQ44K1U4wwtzfu9BnKozxXkV10aBfS44fTFdbBh5i3hRL9PodmP7DQDbEngAhgC9Yk8-lWaPyHArWojCK0kJJ7MH640DynjyWqxAbKvN63RrTrQYYZimFw0aAlsudAbhdJij6hAg"/>
+<span class="absolute top-4 left-4 bg-red-600 text-[10px] font-bold px-2 py-1 uppercase">Tiết kiệm 40%</span>
+</div>
+<h4 class="font-medium mb-1">Flux Technical Parka</h4>
+<div class="flex gap-3">
+<span class="text-red-500 font-bold">$120.00</span>
+<span class="text-on-surface-variant/50 line-through">$200.00</span>
+</div>
+</div>
+<div class="min-w-[280px] group">
+<div class="relative h-[350px] mb-4 bg-white/5 overflow-hidden">
+<img alt="Sale Item" class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="close-up of premium leather Chelsea boots on a black reflective surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClSxCOc7MosVhLT5a7ZGDjyxsS2cKJsdG-1qhaxwUC2j6RRNP0aDg5kbZDGEVidx--688-5OOQG2f5uS56vQbCbiIsGIlTciPUMTfmTns6Hm7skKq-75ERY0N-D2HF8Ziop7vaaDLjeyXg9H83t4pBtrjN7480ecNSBOuIHZaBZ87OFB5AMkJ6Spug493uK0vvGx0owMVjN4IkkHfGJkaq5fWTvj3knVZJ0aeiBFB0i3HKfyKXyGQaK_bl6ThRs_5NiA8XEfOUGZQ"/>
+<span class="absolute top-4 left-4 bg-red-600 text-[10px] font-bold px-2 py-1 uppercase">Tiết kiệm 25%</span>
+</div>
+<h4 class="font-medium mb-1">Combat Leather Boots</h4>
+<div class="flex gap-3">
+<span class="text-red-500 font-bold">$150.00</span>
+<span class="text-on-surface-variant/50 line-through">$200.00</span>
+</div>
+</div>
+<div class="min-w-[280px] group">
+<div class="relative h-[350px] mb-4 bg-white/5 overflow-hidden">
+<img alt="Sale Item" class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="technical running shorts displayed flat on a clean white background with sharp shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6LAMtFfYAXGytFOh-wMGE8DzBbvcjUVuJx9ERcOof4SNsd69IDe43yX2yB2LT-qLCcID5GByqjNaiom3POgJr7D1DmZMKOPAfHmABBVZ-mlCLCD36FhILxpFVvktbzqijFyXry6aiG5gB8h4MUxvMzlP_MMB7QQu6TRZF-D-pcYUJ-oU-aYBeEtKvSHWl9iJUnNz6efEn57yXCTAQcxCP1oFj-vfp-zORGBR3FVdLVzzPio2HMrCAJ1Ao-VcrliHOyDsoTPc24Qs"/>
+<span class="absolute top-4 left-4 bg-red-600 text-[10px] font-bold px-2 py-1 uppercase">Tiết kiệm 50%</span>
+</div>
+<h4 class="font-medium mb-1">Aero-Flow Shorts</h4>
+<div class="flex gap-3">
+<span class="text-red-500 font-bold">$45.00</span>
+<span class="text-on-surface-variant/50 line-through">$90.00</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- New Products & Tabs -->
+<section class="py-24 max-w-screen-2xl mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+<div>
+<h2 class="headline-font text-4xl font-bold mb-4">Sản phẩm mới</h2>
+<p class="text-on-surface-variant">Những mẫu mới nhất từ studio kỹ thuật của chúng tôi.</p>
+</div>
+<div class="flex bg-surface-container-low p-1 rounded-lg">
+<button class="px-6 py-2 bg-white shadow-sm rounded-md font-medium text-sm transition-all">Nam</button>
+<button class="px-6 py-2 text-on-surface-variant hover:text-on-surface font-medium text-sm transition-all">Nữ</button>
+<button class="px-6 py-2 text-on-surface-variant hover:text-on-surface font-medium text-sm transition-all">Unisex</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+<!-- Product Card -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] mb-6 overflow-hidden bg-surface-container-low">
+<img alt="Product" class="absolute inset-0 w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-500" data-alt="man wearing a heavy-weight grey cotton t-shirt with a structured silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd6oOyJG1n5SlxR6Vovh_sQAM2NACS3biXzOlCyct7zQv9OfbVyEUIaIvcljU4jV0ftesptZW8aPcXJ6MooZZuVoVX0A9rFaoo3Lh9pqCJIGNd7Y2iw2-AukBqBUpWscXjUmKW3Rjk0awtOPLgA5RGBff8aO0fDvg5PzFAsdadvVgGC7bcs1wfacbOjtB4k6T4CmRrBm4h5v0AMvShC1cQlHnIYnYpgq3LW8A2b2G8BdQg7T8tVTUOsnot4Mq-Dt3hlMqpLbPTDj0"/>
+<img alt="Product Hover" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500" data-alt="back view detail of a high-quality grey cotton t-shirt showing minimal branding at the neck" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH0z4gq-QC82skbXRmoKEXX6mjab2hfk4HX2ZuXILbczzojPXrMnzyx2RVbokQxzQqldSfZKau_axh2AaFUru6adTTM2Inu6V3L-jqJ-h6rxZg6aOAMZeKee425ZyFlWmHNLh4zUSDpXTL9Ie2nolMtWUnJe0R-VDGzhR6U5AGRIT0_8j_OLlKhITwWs6qMGePInBDAspPWGFpZ8tb7yQOoMqEQfM4gJhm3ID5mEtw4Z-CtraUZqBHpZpM0JHqb3mHYi_4rV_j8-A"/>
+<div class="absolute top-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
+<button class="bg-white p-2 rounded-full shadow hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</button>
+<button class="bg-white p-2 rounded-full shadow hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+<button class="absolute bottom-0 left-0 w-full bg-on-surface text-white py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 font-medium">
+                            Thêm vào giỏ hàng
+                        </button>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-medium group-hover:text-primary transition-colors">Heavyweight Tech Tee</h3>
+<span class="text-sm font-bold">$49.00</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex text-amber-500">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium">(24 Đánh giá)</span>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] mb-6 overflow-hidden bg-surface-container-low">
+<img alt="Product" class="absolute inset-0 w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-500" data-alt="woman wearing high-waisted black architectural trousers with unique pleat details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC0YvOsEJarSJVFjyqILABbN-l9FWuZZmes_k2-Nqx7o_va7uXj2TOSyDL99S2e5rNGBPprdK5ty4ubbhKUAhtagmC0TtaYnb0HXWYZ1mphQHWdBB_GHNQWX9xJUm1MasSe0Y5VmrRMUQiDmqa3EfFX73MVsOmhGs6nu2oSFPiFoMHMsoQjHnbPM93TZ4QGwlxXJVQq1tyG9tE-q40nuuJmUug_B-EgACAy5l1CPtGg4CX4ZBitY0pm8VGuTF_MdQ8NwdnsCZthNs"/>
+<img alt="Product Hover" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500" data-alt="detail view of black fabric texture and clean invisible zipper on designer trousers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzbg5aZ3ngM0s3KC_-lN7_1Tukx6nlh7jW0R0hV8LexY-j0HdB0GjSSuIhco5TRVzSeZCDxQmKEOrrgM8u0cmBduGKiYBixTPmVog-7y4BW0Tx3wms9Bvb5B_-9bp6vFMJU1LQC-w0OlWciPMu0ysmZPWbDilC0RQSviQznHx1NydGbmxkQH6bgRjPNTzcF9ziY1xkKJ-2gXoeMpEvt5T8cesic8GADGYUnOcy6uBr1j7uz6NeaSCiB2JN_lQYkOq9HVXCM1xNl8Q"/>
+<span class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase">Giảm giá</span>
+<div class="absolute top-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
+<button class="bg-white p-2 rounded-full shadow hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</button>
+</div>
+<button class="absolute bottom-0 left-0 w-full bg-on-surface text-white py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 font-medium">
+                            Thêm vào giỏ hàng
+                        </button>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-medium group-hover:text-primary transition-colors">Architectural Trousers</h3>
+<div class="text-right">
+<span class="text-sm font-bold text-red-600">$85.00</span>
+<span class="text-[10px] text-on-surface-variant line-through block">$110.00</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex text-amber-500">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium">(12 Đánh giá)</span>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] mb-6 overflow-hidden bg-surface-container-low">
+<img alt="Product" class="absolute inset-0 w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-500" data-alt="oversized beige technical hoodie with minimalist branding and integrated face mask" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARyH0yrCiW6FjKPLyVwaoCCF37RBiq0jkjql0AhMIQT8jVCvj6zqkz57fdSJGlAU_K-w012VoWdRvPZ8XWyPit4vxuDtNH7_cJnCLpFIrQu1qVlA-jOEGvJyo5V0mSy5jjSQTTsHDrZvtojetkOg1O07okvrNOoDJQd7LN6FM74i_WpjzPeYngMTRztYmmKO5EIPt56WxXmc9pSTSduZqIike8EYpI3tG5lRvC0RrJFPKbaVA8cJdS-BK0A7JN22mupCOfiJS5G9c"/>
+<img alt="Product Hover" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500" data-alt="close up of heavy French terry fabric on a luxury beige hoodie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqlPpbT69d8CF-KTkEWWXBpad1q8_P9fV8LkhN2nK8okeufQeZfird6bYBRjAbhXeUKclpl3LGtrIJgwxQWtt58JCPIsQtBlcoHBIrQuYSfkQkMYlUnyEUEtqtYEX5pmzO1YiAWoq-e7cJwqwgXHKW5IuXnJoVlsSh7C0UNPU7erTqVf2_cI8ItN5GuVsGGEeWXq6nyLo6X9U07txMApnLLGwE-CJpGAkgag7ZNhJPXGaxhzNNHb-XDLJiMK2daTuTYcMPE3UH44k"/>
+<button class="absolute bottom-0 left-0 w-full bg-on-surface text-white py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 font-medium">
+                            Thêm vào giỏ hàng
+                        </button>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-medium group-hover:text-primary transition-colors">Modular Layer Hoodie</h3>
+<span class="text-sm font-bold">$125.00</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex text-amber-500">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]">star</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium">(48 Đánh giá)</span>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] mb-6 overflow-hidden bg-surface-container-low">
+<img alt="Product" class="absolute inset-0 w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-500" data-alt="clean black minimal cross-body bag made of recycled nylon with matte buckles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtVHbNggV35t6UZJvkm0sD8Mqzoi2ARoTYBusvkGP1KWcqywW5sHfLZKX7dYrsQkQ-s7HioUwb3SOJ52ugEsxe7m8yMhbAM1tNbHmmz7jchYxCM4ErUhb8In1ZyZRNZsnwM2P2VAH0xLBLmcTQVSJgAcKx6F12MZUs93fb-Vsu0INNfTeIyNdqqe4Ljl1HFGz6qvCvDsKVINML_wQCwEnIxYNLP9oj-Hb2mzzTQPWj8RVoa6cExMUSoPUvQAC-y4KR3W7uaeJUbQE"/>
+<img alt="Product Hover" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500" data-alt="interior view of a technical cross-body bag showing organized compartments and bright orange lining" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIbS1x-NP-tXQdFJDtsmQQLZkgPmGMeGqyU1L_-TPNjUfnQKPSsTdQic0TMMWDskmkOavn1DkNPpiZos232Hqx1NhBgkiD9hMGsmq_Ua8Qh9L0Zxd1lFkWof3MkD2MO09eeIcuzpqRsM9mFGfuapdTkMlTuMGgLSCoYx9LZuU-txv2rCuzp4SUONql9tVSyYgKs-eANzmEXVpLgDe_dfKZwO8OpHamE1E0y0Xg-EEDGdnwCZEmjwbdAj9_-dKvaa4moVWow_h0egQ"/>
+<button class="absolute bottom-0 left-0 w-full bg-on-surface text-white py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 font-medium">
+                            Thêm vào giỏ hàng
+                        </button>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-medium group-hover:text-primary transition-colors">Sling System V1</h3>
+<span class="text-sm font-bold">$65.00</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex text-amber-500">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium">(32 Đánh giá)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Best Seller Carousel -->
+<section class="bg-surface-container-low py-24">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="flex justify-between items-end mb-16">
+<div>
+<h2 class="headline-font text-4xl font-bold mb-4">Sản phẩm bán chạy</h2>
+<p class="text-on-surface-variant">Những thiết kế kỹ thuật được yêu thích nhất bởi cộng đồng.</p>
+</div>
+<div class="flex gap-4">
+<button class="p-4 rounded-full border border-outline-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined">west</span>
+</button>
+<button class="p-4 rounded-full border border-outline-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined">east</span>
+</button>
+</div>
+</div>
+<div class="flex gap-8 overflow-x-auto no-scrollbar pb-10">
+<!-- Carousel Item -->
+<div class="min-w-[320px] bg-white p-6 rounded-xl shadow-sm border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-square mb-6 overflow-hidden bg-surface-container-low rounded-lg">
+<img alt="Best Seller" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="studio product photo of a matte black technical windbreaker on a ghost mannequin" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwPiE3k2uzxY8FShpTW6hI7nPGv9QoP28IOy5E9O9gcd7Q5A0KB5K23sAdZVf5pV2cNxgo2j4-rtWu9WWVaHkeFcRJju7nvfphgxMYy_AAx5I90a_tIXUcp-a8vCo8DMn5Nw4cEXuqGpHYpMDf1V46_dBCxcJmOXxe_XRJ11RkqCXdglKKvzJaA9LzEFkWCPeHQRpCvt6SF5RkqluXZd2BcovJ86NU8LpyBD-hfMBoQNz1dOZpOFfRcoKux34rE9Ckn_PObYpmJ4A"/>
+</div>
+<h4 class="font-bold mb-4">Omni-Climate Windbreaker</h4>
+<div class="space-y-2 mb-4">
+<div class="flex justify-between text-[11px] font-bold uppercase text-on-surface-variant">
+<span>Đã bán: 245</span>
+<span>Còn lại: 15</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%]"></div>
+</div>
+</div>
+<button class="w-full py-3 border-2 border-on-surface font-bold hover:bg-on-surface hover:text-white transition-all">Mua ngay</button>
+</div>
+<!-- Repeat for more items... -->
+<div class="min-w-[320px] bg-white p-6 rounded-xl shadow-sm border border-transparent hover:border-primary/20 transition-all group">
+<div class="aspect-square mb-6 overflow-hidden bg-surface-container-low rounded-lg">
+<img alt="Best Seller" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="professional photo of minimalist white athletic sneakers with mesh and leather overlays" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3BRoG9lTF4RfhITm12wNX5zh15hFrDswM1fdqv-jWsU39XxciOaQP-ufysOYH_rCWI61dEplVWAoTlgM78ClFVVjUP619SdwMHhTT3W7XMz_4zBIKcvuYcsU7_qIn44srhbHoy6g-wdHRYrCZNvLZgk0qeB3oHdhlHfKxF4pTBcOxm_UC2_9H4v9a7Zbd0sbX5i-6dDGbTpLjaz9pUuTOOcBxVZTF-DdXldEimnhLD0a1dmh09_0YHMzWXnjyeON03BrhdRqhlQM"/>
+</div>
+<h4 class="font-bold mb-4">Cloud-Walk Runner X</h4>
+<div class="space-y-2 mb-4">
+<div class="flex justify-between text-[11px] font-bold uppercase text-on-surface-variant">
+<span>Đã bán: 189</span>
+<span>Còn lại: 40</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[65%]"></div>
+</div>
+</div>
+<button class="w-full py-3 border-2 border-on-surface font-bold hover:bg-on-surface hover:text-white transition-all">Mua ngay</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Brand Slider -->
+<section class="py-16 border-y border-outline-variant/30">
+<div class="max-w-screen-2xl mx-auto px-8 overflow-hidden">
+<div class="flex justify-around items-center opacity-50 gap-20">
+<span class="grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 font-black text-3xl tracking-tighter cursor-pointer">NIKE</span>
+<span class="grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 font-black text-3xl tracking-tighter cursor-pointer">ADIDAS</span>
+<span class="grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 font-black text-3xl tracking-tighter cursor-pointer">ZARA</span>
+<span class="grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 font-black text-3xl tracking-tighter cursor-pointer">H&amp;M</span>
+<span class="grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 font-black text-3xl tracking-tighter cursor-pointer">UNIQLO</span>
+</div>
+</div>
+</section>
+<!-- Blog/News Section -->
+<section class="py-24 max-w-screen-2xl mx-auto px-8">
+<h2 class="headline-font text-4xl font-bold mb-12 text-center underline decoration-primary/20 decoration-8 underline-offset-4">Tin tức kỹ thuật</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<article class="group">
+<div class="aspect-video overflow-hidden rounded-xl mb-6 bg-surface-container">
+<img alt="Blog" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="behind the scenes of a garment factory showing precision laser cutting technology on white fabric" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-8Iforiq0mc2Jwi7W3qXwrV_AICeRpOadFdITTVJFJHWjvORDTv_04q_NoUK6rBQmdc8Z_B1eeiJ6RFPtU9EUp2-hSJhbKlrJjcacyTS3cfRTHiUKjgLZWd_mo-ixeeBWzRKwle0Z1fUSWeH0QkdlstYNXle2GqmTSebcf46wOnEBMgNhZzDCpvSsl1C1RvB9OMfPMTkqa4-2IcZlwii8q-FmQu7tiRbnpbA-1EfsFzbMbUWQTmkNONu_5c1AXA7aTzg81_2Vsb4"/>
+</div>
+<span class="text-[10px] font-bold uppercase text-primary tracking-widest block mb-2">Bền vững</span>
+<h3 class="headline-font text-xl font-bold mb-4 group-hover:text-primary transition-colors">Tương lai của những đường may cắt bằng Laser</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Khám phá cách tự động hóa robot đang định nghĩa lại độ chính xác của cấu trúc thời trang kiến trúc.</p>
+<a class="text-sm font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform" href="#">Xem thêm <span class="material-symbols-outlined text-sm">east</span></a>
+</article>
+<article class="group">
+<div class="aspect-video overflow-hidden rounded-xl mb-6 bg-surface-container">
+<img alt="Blog" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="portrait of a fashion designer in a minimal glass office surrounded by fabric swatches and technical drawings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCeeF-CM3QGLgsuZ97G1YIPoYDsul-mqqBQw-8gkZFlRCT0Io8Yhoue-eEI-3doNFE10m0FYNlgI1Lrvrx80edXsd0okLjabSfNLkwNrNz9EIVWNt-cl3pRPZyZJmY0ex_2zhTLDY4S4FHdaxfaN-8pfZtbkTGWT1LGzqri2MA83wOlydQ2NTmbJz8kee2BXhWzqUyC4o6sWu8AHitHiu_F8iLc7I1Wcg8KAbsPTFmmGNStl5o7JiSBtIqNT-6DP--MrBefrfj_kQ"/>
+</div>
+<span class="text-[10px] font-bold uppercase text-primary tracking-widest block mb-2">Phòng thí nghiệm thiết kế</span>
+<h3 class="headline-font text-xl font-bold mb-4 group-hover:text-primary transition-colors">Giao điểm: Công năng &amp; Hình thái</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Nhà thiết kế chính của chúng tôi thảo luận về sự cân bằng giữa túi ưu tiên tiện dụng và kiểu dáng sàn diễn cao cấp.</p>
+<a class="text-sm font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform" href="#">Xem thêm <span class="material-symbols-outlined text-sm">east</span></a>
+</article>
+<article class="group">
+<div class="aspect-video overflow-hidden rounded-xl mb-6 bg-surface-container">
+<img alt="Blog" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="vibrant neon lights reflecting on wet city streets at night with a futuristic urban vibe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEljpK6dBzzFd7g_cWFsLa67f0phEgSS4e_kg1RmD1crsKtPjpK72Mp4FK-ogGRqJvctjmbTIT-3DpOzmfXm2Ap_4HcshbvZuKafhTb-Upow8y0D19-i0fL0hGKA0qTyw3oODMNMcU7oRh2761T3sb4LZABVCpi7xYKydyh9XEFIz0m5m2Meyo3HCWtY2hzhnLu01rPrXebNy4Yiy0R6p88pG9w8DjsBshzcRYLw-c7DVSTi47k4VVx7UcpUR6dJaDJxAJhKJduAE"/>
+</div>
+<span class="text-[10px] font-bold uppercase text-primary tracking-widest block mb-2">Văn hóa</span>
+<h3 class="headline-font text-xl font-bold mb-4 group-hover:text-primary transition-colors">Tính linh động đô thị năm 2024</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Tại sao trang phục kỹ thuật đang trở thành đồng phục hàng ngày cho những người du mục kỹ thuật số hiện đại.</p>
+<a class="text-sm font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform" href="#">Xem thêm <span class="material-symbols-outlined text-sm">east</span></a>
+</article>
+</div>
+</section>
+<!-- Newsletter: Glassmorphism -->
+<section class="py-24 px-8">
+<div class="max-w-screen-xl mx-auto bg-primary rounded-[2rem] p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+<div class="absolute bottom-0 left-0 w-96 h-96 bg-secondary rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+</div>
+<div class="relative z-10 text-white max-w-md">
+<h2 class="headline-font text-4xl font-bold mb-4">Tham gia cộng đồng</h2>
+<p class="text-primary-fixed-dim leading-relaxed">Đăng ký để nhận quyền truy cập sớm vào các đợt phát hành mới và thông tin kỹ thuật độc quyền. Không quảng cáo, chỉ có sự tinh tế.</p>
+</div>
+<form class="relative z-10 w-full max-w-md flex bg-white/10 backdrop-blur-md p-1.5 rounded-xl border border-white/20">
+<input class="bg-transparent border-none focus:ring-0 text-white placeholder:text-white/60 flex-1 px-4 text-sm" placeholder="Nhập địa chỉ email của bạn" type="email"/>
+<button class="bg-white text-primary px-8 py-3 rounded-lg font-bold hover:bg-primary-fixed transition-colors">Đăng ký</button>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full pt-24 pb-12 bg-slate-50 dark:bg-slate-950 font-['Inter'] text-sm leading-relaxed">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-8 max-w-screen-2xl mx-auto">
+<div class="space-y-6">
+<a class="text-xl font-bold text-slate-900 dark:text-slate-50" href="#">CLOTH</a>
+<p class="text-slate-500 dark:text-slate-400">Thương mại điện tử Phòng trưng bày Kỹ thuật. Tuyển chọn những mẫu trang phục kiến trúc và mô-đun tốt nhất từ năm 2018.</p>
+<div class="flex gap-4">
+<a class="text-slate-500 hover:text-red-600 transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-slate-500 hover:text-red-600 transition-colors" href="#"><span class="material-symbols-outlined">chat</span></a>
+<a class="text-slate-500 hover:text-red-600 transition-colors" href="#"><span class="material-symbols-outlined">camera</span></a>
+</div>
+</div>
+<div>
+<h4 class="font-bold mb-6 text-slate-900 dark:text-slate-50">Liên kết nhanh</h4>
+<ul class="space-y-4">
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Nam</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors underline" href="#">Nữ</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Trẻ em</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Giảm giá</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6 text-slate-900 dark:text-slate-50">Thông tin</h4>
+<ul class="space-y-4">
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Về chúng tôi</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Giao hàng</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Đổi trả</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" href="#">Chính sách bảo mật</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6 text-slate-900 dark:text-slate-50">Liên hệ</h4>
+<ul class="space-y-4 text-slate-500 dark:text-slate-400">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-sm">pin_drop</span> 123 Đại lộ Tech, Quận 1, HCM</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-sm">mail</span> support@cloth.com</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-sm">call</span> +84 900 123 456</li>
+</ul>
+</div>
+</div>
+</footer></body></html>

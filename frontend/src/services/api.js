@@ -6,16 +6,17 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   },
 })
 
 // Log all requests
 api.interceptors.request.use(
   (config) => {
-    console.log('API Request:', config.baseURL + config.url)
-    // Thêm token nếu có
-    const token = localStorage.getItem('token')
+    // Admin token takes priority, fallback to customer token
+    const adminToken = localStorage.getItem('admin_token')
+    const customerToken = localStorage.getItem('clothing_store_token')
+    const token = adminToken || customerToken
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -29,8 +30,9 @@ api.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error.response?.status === 401) {
-      // Xử lý logout
-      localStorage.removeItem('token')
+      // Xử lý logout - dùng đúng key consistent với AuthContext
+      localStorage.removeItem('clothing_store_token')
+      localStorage.removeItem('clothing_store_auth')
       window.location.href = '/login'
     }
     return Promise.reject(error)
@@ -60,6 +62,17 @@ export const saleAPI = {
     const queryParams = new URLSearchParams(params).toString()
     return api.get(`/products/sale${queryParams ? `?${queryParams}` : ''}`)
   },
+}
+
+export const orderAPI = {
+  createOrder: (orderData) => api.post('/orders', orderData),
+  getOrders: (params) => api.get('/orders', { params }),
+  getOrderDetail: (id) => api.get(`/orders/${id}`),
+  cancelOrder: (id, reason) => api.post(`/orders/${id}/cancel`, { reason }),
+}
+
+export const customerAPI = {
+  createReview: (data) => api.post('/reviews', data),
 }
 
 export default api

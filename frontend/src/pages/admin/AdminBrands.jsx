@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
-import { Plus, Edit, Trash2, ToggleLeft, ToggleRight, Search, Tag } from 'lucide-react'
+import { Plus, Edit, Trash2, ToggleLeft, ToggleRight, Search, AlertCircle } from 'lucide-react'
 
 const emptyBrand = { name: '', slug: '', description: '', website: '', country: '', is_featured: false, is_active: true }
 
@@ -13,6 +13,7 @@ export default function AdminBrands() {
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(emptyBrand)
   const [search, setSearch] = useState('')
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   useEffect(() => { fetchBrands() }, [])
 
@@ -65,14 +66,16 @@ export default function AdminBrands() {
     setShowForm(true)
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Xóa thương hiệu này?')) return
+  const handleDelete = async () => {
+    if (!deleteTarget) return
     try {
-      await api.delete(`/admin/brands/${id}`)
-      setBrands(brands.filter(b => b.id !== id))
+      await api.delete(`/admin/brands/${deleteTarget.id}`)
+      setBrands(brands.filter(b => b.id !== deleteTarget.id))
       toast.success('Đã xóa thương hiệu')
-    } catch {
-      toast.error('Xóa thương hiệu thất bại')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Xóa thương hiệu thất bại')
+    } finally {
+      setDeleteTarget(null)
     }
   }
 
@@ -117,14 +120,14 @@ export default function AdminBrands() {
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => handleEdit(brand)} className="p-2 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50"><Edit size={16} /></button>
-                <button onClick={() => handleDelete(brand.id)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
+                <button onClick={() => setDeleteTarget(brand)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
               </div>
             </div>
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
               <div className="flex items-center gap-2">
                 {brand.is_featured && <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">Nổi bật</span>}
               </div>
-              <button onClick={() => toggle(brand, 'is_active')} className={`${brand.is_active ? 'text-green-500' : 'text-gray-300'}`}>
+              <button onClick={() => toggle(brand, 'is_active')} className={brand.is_active ? 'text-green-500' : 'text-gray-300'}>
                 {brand.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
               </button>
             </div>
@@ -181,6 +184,27 @@ export default function AdminBrands() {
                 <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Lưu</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                <AlertCircle size={20} className="text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Xác nhận xóa</h3>
+                <p className="text-sm text-gray-500">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-5">Bạn có chắc muốn xóa thương hiệu <strong>"{deleteTarget.name}"</strong>?</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Hủy</button>
+              <button onClick={handleDelete} className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">Xóa</button>
+            </div>
           </div>
         </div>
       )}

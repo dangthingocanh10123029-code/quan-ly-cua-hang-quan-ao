@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
-import { Search, Plus, Edit, Trash2, ChevronLeft, ChevronRight, UserCog, Mail, Phone, DollarSign, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, ChevronLeft, ChevronRight, UserCog, Mail, Phone, DollarSign, ToggleLeft, ToggleRight, AlertCircle } from 'lucide-react'
 
 const emptyEmp = {
   first_name: '', last_name: '', email: '', phone: '', id_card: '',
@@ -18,6 +18,7 @@ export default function AdminEmployees() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(emptyEmp)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   useEffect(() => { fetchEmployees() }, [page, search])
 
@@ -36,10 +37,11 @@ export default function AdminEmployees() {
 
   const toggleStatus = async (emp) => {
     try {
-      await api.put(`/admin/employees/${emp.id}/toggle`)
+      const res = await api.put(`/admin/employees/${emp.id}/toggle`)
       setEmployees(employees.map(e => e.id === emp.id ? { ...e, is_active: !e.is_active } : e))
       toast.success('Đã cập nhật trạng thái nhân viên')
-    } catch {
+    } catch (err) {
+      console.error('Toggle status error:', err)
       setEmployees(employees.map(e => e.id === emp.id ? { ...e, is_active: !e.is_active } : e))
       toast.error('Không thể cập nhật trạng thái')
     }
@@ -60,29 +62,33 @@ export default function AdminEmployees() {
       setShowForm(false)
       setForm(emptyEmp)
       setEditing(null)
-    } catch {
-      toast.error('Lưu nhân viên thất bại')
+    } catch (err) {
+      console.error('Save employee error:', err)
+      toast.error(err.response?.data?.message || 'Lưu nhân viên thất bại')
       setShowForm(false)
     }
   }
 
   const handleEdit = (emp) => {
-    const parts = emp.full_name.trim().split(' ')
+    console.log('Editing employee:', emp)
+    const parts = emp.full_name ? emp.full_name.trim().split(' ') : ['', '']
     const first_name = parts[0] || ''
     const last_name = parts.slice(1).join(' ') || ''
-    setForm({ first_name, last_name, email: emp.email, phone: emp.phone, id_card: emp.id_card || '', position: emp.position, department: emp.department, hire_date: emp.hire_date, salary: emp.salary, gender: emp.gender || 'male' })
+    setForm({ first_name, last_name, email: emp.email || '', phone: emp.phone || '', id_card: emp.id_card || '', position: emp.position || '', department: emp.department || '', hire_date: emp.hire_date || '', salary: emp.salary || '', gender: emp.gender || 'male' })
     setEditing(emp.id)
     setShowForm(true)
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Xóa nhân viên này?')) return
+  const handleDelete = async () => {
+    if (!deleteTarget) return
     try {
-      await api.delete(`/admin/employees/${id}`)
-      setEmployees(employees.filter(e => e.id !== id))
+      await api.delete(`/admin/employees/${deleteTarget.id}`)
+      setEmployees(employees.filter(e => e.id !== deleteTarget.id))
       toast.success('Đã xóa nhân viên')
-    } catch {
-      toast.error('Xóa nhân viên thất bại')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Xóa nhân viên thất bại')
+    } finally {
+      setDeleteTarget(null)
     }
   }
 
@@ -148,7 +154,7 @@ export default function AdminEmployees() {
                   <td className="px-4 py-3.5">
                     <div className="flex items-center justify-center gap-1">
                       <button onClick={() => handleEdit(emp)} className="p-2 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50"><Edit size={16} /></button>
-                      <button onClick={() => handleDelete(emp.id)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
+                      <button onClick={() => setDeleteTarget(emp)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
                     </div>
                   </td>
                 </tr>
@@ -212,6 +218,27 @@ export default function AdminEmployees() {
                 <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Lưu</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                <AlertCircle size={20} className="text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Xác nhận xóa</h3>
+                <p className="text-sm text-gray-500">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-5">Bạn có chắc muốn xóa nhân viên <strong>"{deleteTarget.full_name}"</strong>?</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Hủy</button>
+              <button onClick={handleDelete} className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">Xóa</button>
+            </div>
           </div>
         </div>
       )}

@@ -1,82 +1,30 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Newsletter from '../components/Newsletter'
+import api from '../services/api'
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' })
+}
 
 const BlogPage = () => {
-  const articles = [
-    {
-      id: 1,
-      title: 'Xu hướng thời trang 2024: Những gì đang lên ngôi',
-      slug: 'xu-huong-thoi-trang-2024',
-      category: 'Xu hướng',
-      thumbnail: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600',
-      summary: 'Khám phá những xu hướng thời trang nổi bật nhất năm 2024, từ màu sắc đến kiểu dáng đang được giới trẻ ưa chuộng.',
-      published_at: '2024-04-15',
-      author: 'CLOTH Editorial'
-    },
-    {
-      id: 2,
-      title: 'Cách phối đồ cho mùa hè năng động',
-      slug: 'cach-phoi-do-cho-mua-he',
-      category: 'Hướng dẫn',
-      thumbnail: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600',
-      summary: 'Những tips phối đồ giúp bạn tự tin và thoải mái trong những ngày hè nóng bỏng.',
-      published_at: '2024-04-10',
-      author: 'Style Team'
-    },
-    {
-      id: 3,
-      title: 'Bền vững trong thời trang: Lựa chọn xanh cho tương lai',
-      slug: 'ben-vung-trong-thoi-trang',
-      category: 'Cộng đồng',
-      thumbnail: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600',
-      summary: 'CLOTH cam kết với môi trường bằng những bước tiến trong việc sản xuất bền vững.',
-      published_at: '2024-04-05',
-      author: 'CLOTH Editorial'
-    },
-    {
-      id: 4,
-      title: '5 items không thể thiếu trong tủ đồ nam giới',
-      slug: '5-items-khong-the-thieu-trong-tu-do-nam',
-      category: 'Gợi ý',
-      thumbnail: 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=600',
-      summary: 'Những món đồ cơ bản nhưng không thể thiếu giúp nam giới xây dựng tủ đồ hoàn hảo.',
-      published_at: '2024-03-28',
-      author: 'Style Team'
-    },
-    {
-      id: 5,
-      title: 'Thời trang circular: Xu hướng thế giới hướng tới',
-      slug: 'thoi-trang-circular',
-      category: 'Xu hướng',
-      thumbnail: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600',
-      summary: 'Khái niệm thời trang tuần hoàn đang ngày càng phổ biến, hướng tới một nền công nghiệp thời trang bền vững hơn.',
-      published_at: '2024-03-20',
-      author: 'CLOTH Editorial'
-    },
-    {
-      id: 6,
-      title: ' Bí quyết bảo quản quần áo để giữ độ bền lâu dài',
-      slug: 'bi-quyet-bao-quan-quan-ao',
-      category: 'Hướng dẫn',
-      thumbnail: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600',
-      summary: 'Những mẹo đơn giản giúp quần áo của bạn luôn mới và bền đẹp theo thời gian.',
-      published_at: '2024-03-15',
-      author: 'Style Team'
-    }
-  ]
+  const [articles, setArticles] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' })
-  }
+  useEffect(() => {
+    api.get('/news?limit=20').then(res => {
+      if (res.success) setArticles(res.news || [])
+    }).catch(() => {}).finally(() => setLoading(false))
+  }, [])
 
-  const categories = ['Tất cả', 'Xu hướng', 'Hướng dẫn', 'Cộng đồng', 'Gợi ý']
-  const [activeCategory, setActiveCategory] = React.useState('Tất cả')
+  const categories = ['Tất cả', ...new Set(articles.map(a => a.category).filter(Boolean))]
+  const [activeCategory, setActiveCategory] = useState('Tất cả')
 
-  const filteredArticles = activeCategory === 'Tất cả' 
-    ? articles 
+  const filteredArticles = activeCategory === 'Tất cả'
+    ? articles
     : articles.filter(a => a.category === activeCategory)
 
   return (
@@ -118,9 +66,21 @@ const BlogPage = () => {
 
         {/* Articles Grid */}
         <section className="py-16 max-w-screen-2xl mx-auto px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1,2,3].map(i => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[4/3] bg-slate-200 rounded-2xl mb-6" />
+                  <div className="h-3 bg-slate-200 rounded w-1/4 mb-3" />
+                  <div className="h-5 bg-slate-200 rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-slate-200 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : filteredArticles.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article) => (
-              <article key={article.id} className="group cursor-pointer">
+              <Link key={article.id} to={`/blog/${article.slug}`} className="group block">
                 {/* Thumbnail */}
                 <div className="aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-slate-100">
                   <img
@@ -148,14 +108,13 @@ const BlogPage = () => {
 
                 {/* Meta */}
                 <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>{article.author}</span>
+                  <span>{article.author_name}</span>
                   <span>{formatDate(article.published_at)}</span>
                 </div>
-              </article>
+              </Link>
             ))}
-          </div>
-
-          {filteredArticles.length === 0 && (
+            </div>
+          ) : (
             <div className="text-center py-16">
               <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">search_off</span>
               <p className="text-slate-500">Không có bài viết nào trong danh mục này</p>

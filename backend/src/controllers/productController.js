@@ -23,8 +23,8 @@ module.exports = {
           b.name as brand_name,
           b.slug as brand_slug,
           b.logo as brand_logo,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN brands b ON p.brand_id = b.id
@@ -91,7 +91,7 @@ module.exports = {
           u.avatar as user_avatar
         FROM product_reviews pr
         INNER JOIN users u ON pr.user_id = u.id
-        WHERE pr.product_id = ? AND pr.is_approved = TRUE
+        WHERE pr.product_id = ? AND pr.is_approved = TRUE AND pr.is_active = TRUE
         ORDER BY pr.created_at DESC
         LIMIT 10
       `, [product.id]);
@@ -107,8 +107,8 @@ module.exports = {
           p.stock,
           c.name as category_name,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         WHERE p.category_id = ? AND p.id != ? AND p.is_active = TRUE
@@ -120,6 +120,8 @@ module.exports = {
         success: true,
         data: {
           ...product,
+          avg_rating: parseFloat(product.avg_rating) || 0,
+          review_count: parseInt(product.review_count) || 0,
           images,
           variants,
           sizes,
@@ -240,8 +242,8 @@ module.exports = {
           b.name as brand_name,
           b.slug as brand_slug,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN brands b ON p.brand_id = b.id
@@ -361,8 +363,8 @@ module.exports = {
           c.slug as category_slug,
           b.name as brand_name,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN brands b ON p.brand_id = b.id

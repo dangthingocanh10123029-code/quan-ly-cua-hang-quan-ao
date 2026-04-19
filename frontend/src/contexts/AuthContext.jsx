@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import api from '../services/api'
 
 const AuthContext = createContext()
 
 const AUTH_STORAGE_KEY = 'clothing_store_auth'
+const TOKEN_KEY = 'clothing_store_token'
 
 const initialState = {
   user: null,
@@ -27,101 +29,97 @@ function authReducer(state, action) {
   }
 }
 
-// Load user from localStorage
-function loadUserFromStorage() {
+function loadAuthFromStorage() {
   try {
     const saved = localStorage.getItem(AUTH_STORAGE_KEY)
-    return saved ? JSON.parse(saved) : null
+    const token = localStorage.getItem(TOKEN_KEY)
+    return { user: saved ? JSON.parse(saved) : null, token }
   } catch {
-    return null
+    return { user: null, token: null }
   }
 }
 
-// Save user to localStorage
-function saveUserToStorage(user) {
+function saveAuthToStorage(user, token) {
   try {
     if (user) {
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user))
+      if (token) localStorage.setItem(TOKEN_KEY, token)
     } else {
       localStorage.removeItem(AUTH_STORAGE_KEY)
+      localStorage.removeItem(TOKEN_KEY)
     }
   } catch (error) {
     console.error('Error saving auth:', error)
   }
 }
 
+const DEFAULT_AVATAR = null
+
+function buildUserObject(userData, id) {
+  return {
+    id,
+    name: userData.name || '',
+    email: userData.email || '',
+    phone: userData.phone || '',
+    birthDate: '',
+    gender: '',
+    avatar: userData.avatar !== undefined ? userData.avatar : DEFAULT_AVATAR,
+    memberLevel: 'Bronze'
+  }
+}
+
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  // Initialize auth from localStorage
   useEffect(() => {
-    const user = loadUserFromStorage()
+    const { user } = loadAuthFromStorage()
     dispatch({ type: 'INIT_AUTH', payload: user })
   }, [])
 
   const login = async (email, password) => {
     dispatch({ type: 'SET_LOADING', payload: true })
-    
     try {
-      // Simulate API call - in real app, call backend API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Demo user data - replace with real API response
-      const userData = {
-        id: 1,
-        name: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        email: email,
-        phone: '098 765 4321',
-        birthDate: '15/05/1995',
-        gender: 'Nam',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
-        memberLevel: 'Gold'
+      const res = await api.post('/auth/login', { email, password })
+      if (res.success) {
+        saveAuthToStorage(res.user, res.token)
+        dispatch({ type: 'LOGIN_SUCCESS', payload: res.user })
+        return { success: true }
       }
-      
-      saveUserToStorage(userData)
-      dispatch({ type: 'LOGIN_SUCCESS', payload: userData })
-      return { success: true }
-    } catch (error) {
       dispatch({ type: 'SET_LOADING', payload: false })
-      return { success: false, error: 'Đăng nhập thất bại' }
+      return { success: false, error: res.message || 'Đăng nhập thất bại' }
+    } catch (err) {
+      dispatch({ type: 'SET_LOADING', payload: false })
+      const message = err.response?.data?.message || 'Đăng nhập thất bại'
+      return { success: false, error: message }
     }
   }
 
   const register = async (userData) => {
     dispatch({ type: 'SET_LOADING', payload: true })
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const newUser = {
-        id: Date.now(),
-        name: userData.name,
-        email: userData.email,
-        phone: userData.phone,
-        birthDate: '',
-        gender: '',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
-        memberLevel: 'Bronze'
+      const res = await api.post('/auth/register', userData)
+      if (res.success) {
+        saveAuthToStorage(res.user, res.token)
+        dispatch({ type: 'LOGIN_SUCCESS', payload: res.user })
+        return { success: true }
       }
-      
-      saveUserToStorage(newUser)
-      dispatch({ type: 'LOGIN_SUCCESS', payload: newUser })
-      return { success: true }
-    } catch (error) {
       dispatch({ type: 'SET_LOADING', payload: false })
-      return { success: false, error: 'Đăng ký thất bại' }
+      return { success: false, error: res.message || 'Đăng ký thất bại' }
+    } catch (err) {
+      dispatch({ type: 'SET_LOADING', payload: false })
+      const message = err.response?.data?.message || 'Đăng ký thất bại'
+      return { success: false, error: message }
     }
   }
 
   const logout = () => {
-    saveUserToStorage(null)
+    saveAuthToStorage(null, null)
     dispatch({ type: 'LOGOUT' })
   }
 
   const updateUser = (data) => {
     const updatedUser = { ...state.user, ...data }
-    saveUserToStorage(updatedUser)
+    saveAuthToStorage(updatedUser, null)
     dispatch({ type: 'UPDATE_USER', payload: data })
   }
 

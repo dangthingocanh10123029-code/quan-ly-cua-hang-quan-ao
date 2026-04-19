@@ -9,6 +9,8 @@ require('dotenv').config();
 const homeRoutes = require('./routes/api');
 const adminRoutes = require('./routes/admin');
 const adminAuthRoutes = require('./routes/adminAuth');
+const customerRoutes = require('./routes/customer');
+const { runMigrations } = require('./utils/migrations');
 
 const app = express();
 
@@ -35,7 +37,7 @@ app.use(compression());
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 1000, // limit each IP to 1000 requests per windowMs
   message: 'Quá nhiều yêu cầu, vui lòng thử lại sau.'
 });
 app.use('/api/', limiter);
@@ -48,6 +50,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api', homeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', adminAuthRoutes);
+app.use('/api', customerRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -74,9 +77,15 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📡 API: http://localhost:${PORT}/api`);
-});
+async function start() {
+  await runMigrations()
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📡 API: http://localhost:${PORT}/api`);
+  });
+}
+
+start();
 
 module.exports = app;

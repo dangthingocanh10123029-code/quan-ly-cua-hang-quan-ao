@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
-import { Search, Plus, Edit, Trash2, Tag, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, Tag, ToggleLeft, ToggleRight, AlertCircle } from 'lucide-react'
 
 const emptyCoupon = {
   code: '', name: '', description: '', coupon_type: 'general',
@@ -17,6 +17,7 @@ export default function AdminCoupons() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(emptyCoupon)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   useEffect(() => { fetchCoupons() }, [])
 
@@ -52,14 +53,16 @@ export default function AdminCoupons() {
   }
 
   const handleEdit = (c) => { setForm({ ...c }); setEditing(c.id); setShowForm(true) }
-  const handleDelete = async (id) => {
-    if (!confirm('Xóa mã này?')) return
+  const handleDelete = async () => {
+    if (!deleteTarget) return
     try {
-      await api.delete(`/admin/coupons/${id}`)
-      setCoupons(coupons.filter(c => c.id !== id))
+      await api.delete(`/admin/coupons/${deleteTarget.id}`)
+      setCoupons(coupons.filter(c => c.id !== deleteTarget.id))
       toast.success('Đã xóa mã giảm giá')
-    } catch {
-      toast.error('Xóa mã giảm giá thất bại')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Xóa mã giảm giá thất bại')
+    } finally {
+      setDeleteTarget(null)
     }
   }
 
@@ -141,7 +144,7 @@ export default function AdminCoupons() {
                   <td className="px-5 py-3.5">
                     <div className="flex items-center justify-center gap-1">
                       <button onClick={() => handleEdit(c)} className="p-2 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50"><Edit size={16} /></button>
-                      <button onClick={() => handleDelete(c.id)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
+                      <button onClick={() => setDeleteTarget(c)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
                     </div>
                   </td>
                 </tr>
@@ -233,6 +236,27 @@ export default function AdminCoupons() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                <AlertCircle size={20} className="text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Xác nhận xóa</h3>
+                <p className="text-sm text-gray-500">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-5">Bạn có chắc muốn xóa mã giảm giá <strong>"{deleteTarget.code}"</strong>?</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Hủy</button>
+              <button onClick={handleDelete} className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">Xóa</button>
+            </div>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
-import { FileText, Plus, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Search, Calendar, Tag } from 'lucide-react'
+import { FileText, Plus, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Search, Calendar, Tag, AlertCircle } from 'lucide-react'
 
 const emptyPost = { title: '', slug: '', summary: '', content: '', category: '', is_featured: false, is_published: true, thumbnail: '' }
 
@@ -13,6 +13,7 @@ export default function AdminBlog() {
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(emptyPost)
   const [search, setSearch] = useState('')
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   useEffect(() => { fetchPosts() }, [])
 
@@ -49,14 +50,16 @@ export default function AdminBlog() {
   }
 
   const handleEdit = (post) => { setForm({ ...emptyPost, ...post }); setEditing(post.id); setShowForm(true) }
-  const handleDelete = async (id) => {
-    if (!confirm('Xóa bài viết này?')) return
+  const handleDelete = async () => {
+    if (!deleteTarget) return
     try {
-      await api.delete(`/admin/news/${id}`)
-      setPosts(posts.filter(p => p.id !== id))
+      await api.delete(`/admin/news/${deleteTarget.id}`)
+      setPosts(posts.filter(p => p.id !== deleteTarget.id))
       toast.success('Đã xóa bài viết')
-    } catch {
-      toast.error('Xóa bài viết thất bại')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Xóa bài viết thất bại')
+    } finally {
+      setDeleteTarget(null)
     }
   }
 
@@ -135,7 +138,7 @@ export default function AdminBlog() {
                 <td className="px-5 py-3.5">
                   <div className="flex items-center justify-center gap-1">
                     <button onClick={() => handleEdit(post)} className="p-2 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50"><Edit size={16} /></button>
-                    <button onClick={() => handleDelete(post.id)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
+                    <button onClick={() => setDeleteTarget(post)} className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>
@@ -196,6 +199,27 @@ export default function AdminBlog() {
                 <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Lưu</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                <AlertCircle size={20} className="text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Xác nhận xóa</h3>
+                <p className="text-sm text-gray-500">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-5">Bạn có chắc muốn xóa bài viết <strong>"{deleteTarget.title}"</strong>?</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Hủy</button>
+              <button onClick={handleDelete} className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">Xóa</button>
+            </div>
           </div>
         </div>
       )}

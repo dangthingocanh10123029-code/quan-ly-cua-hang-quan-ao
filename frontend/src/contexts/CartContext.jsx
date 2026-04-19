@@ -118,7 +118,7 @@ export function CartProvider({ children }) {
   }
 
   const getItemCount = () => {
-    return state.items.reduce((sum, item) => sum + item.quantity, 0)
+    return state.items.length
   }
 
   const value = {

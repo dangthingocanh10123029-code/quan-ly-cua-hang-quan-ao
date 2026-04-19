@@ -3,17 +3,12 @@ import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useCart } from '../contexts/CartContext'
+import { useToast } from '../contexts/ToastContext'
 import { formatPrice } from '../utils/formatPrice'
 
 const CartPage = () => {
-  const { 
-    items, 
-    updateQuantity, 
-    removeItem, 
-    getCartTotal, 
-    getOriginalTotal,
-    getItemCount 
-  } = useCart()
+  const { items, updateQuantity, removeItem, getCartTotal, getOriginalTotal, getItemCount } = useCart()
+  const toast = useToast()
 
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
@@ -30,9 +25,8 @@ const CartPage = () => {
   }
 
   const handleRemoveItem = (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
-      removeItem(id)
-    }
+    removeItem(id)
+    toast.success('Đã xóa sản phẩm khỏi giỏ hàng')
   }
 
   const applyCoupon = () => {
@@ -81,10 +75,10 @@ const CartPage = () => {
     <div className="min-h-screen bg-background">
       <Header cartCount={getItemCount()} />
       
-      <main className="max-w-screen-2xl mx-auto px-6 md:px-12 py-16">
+      <main className="pt-20 max-w-screen-2xl mx-auto px-6 md:px-12 py-16">
         {/* Page Title */}
         <header className="mb-16">
-          <h1 className="text-5xl font-headline font-bold tracking-tighter text-on-surface mb-4">Giỏ hàng của bạn</h1>
+          <h1 className="text-3xl font-headline font-bold tracking-tight text-on-surface mb-4">Giỏ hàng của bạn</h1>
           <p className="text-on-surface-variant font-label uppercase tracking-widest text-sm">
             {getItemCount()} SẢN PHẨM TRONG TÚI
           </p>

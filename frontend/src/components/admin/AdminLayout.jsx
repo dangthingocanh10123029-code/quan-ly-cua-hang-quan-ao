@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import AdminSidebar from './AdminSidebar'
 import AdminHeader from './AdminHeader'
+import { NotificationProvider } from '../../contexts/NotificationContext'
 
 const pageTitles = {
   '/admin': 'Tổng quan',
@@ -30,18 +31,20 @@ export default function AdminLayout() {
   const title = pageTitles[location.pathname] || 'Admin'
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminSidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
-      <AdminHeader title={title} sidebarCollapsed={collapsed} />
-      <main
-        className={`pt-16 min-h-screen transition-all duration-300 ${
-          collapsed ? 'ml-[72px]' : 'ml-[260px]'
-        }`}
-      >
-        <div className="p-6">
-          <Outlet />
-        </div>
-      </main>
-    </div>
+    <NotificationProvider>
+      <div className="min-h-screen bg-gray-50">
+        <AdminSidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+        <AdminHeader title={title} sidebarCollapsed={collapsed} />
+        <main
+          className={`pt-16 min-h-screen transition-all duration-300 ${
+            collapsed ? 'ml-[72px]' : 'ml-[260px]'
+          }`}
+        >
+          <div className="p-6">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </NotificationProvider>
   )
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
-import { Search, Plus, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Percent, Calendar, Clock } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Percent, Calendar, Clock, AlertCircle } from 'lucide-react'
 
 export default function AdminPromotions() {
   const toast = useToast()
@@ -15,6 +15,7 @@ export default function AdminPromotions() {
     valid_from: '', valid_until: '', is_active: true, is_featured: false,
     applicable_products: '', applicable_categories: '',
   })
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   useEffect(() => { fetchPromotions() }, [])
 
@@ -56,14 +57,16 @@ export default function AdminPromotions() {
     setShowForm(true)
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Xóa khuyến mãi này?')) return
+  const handleDelete = async () => {
+    if (!deleteTarget) return
     try {
-      await api.delete(`/admin/promotions/${id}`)
-      setPromotions(promotions.filter(p => p.id !== id))
+      await api.delete(`/admin/promotions/${deleteTarget.id}`)
+      setPromotions(promotions.filter(p => p.id !== deleteTarget.id))
       toast.success('Đã xóa khuyến mãi')
-    } catch {
-      toast.error('Xóa khuyến mãi thất bại')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Xóa khuyến mãi thất bại')
+    } finally {
+      setDeleteTarget(null)
     }
   }
 
@@ -100,7 +103,7 @@ export default function AdminPromotions() {
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => handleEdit(promo)} className="p-1.5 rounded text-gray-400 hover:text-green-600"><Edit size={15} /></button>
-                  <button onClick={() => handleDelete(promo.id)} className="p-1.5 rounded text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
+                  <button onClick={() => setDeleteTarget(promo)} className="p-1.5 rounded text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
                 </div>
               </div>
               <h3 className="font-bold text-gray-900 mt-3">{promo.name}</h3>
@@ -191,6 +194,27 @@ export default function AdminPromotions() {
                 <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Lưu</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                <AlertCircle size={20} className="text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Xác nhận xóa</h3>
+                <p className="text-sm text-gray-500">Hành động này không thể hoàn tác</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-5">Bạn có chắc muốn xóa khuyến mãi <strong>"{deleteTarget.name}"</strong>?</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Hủy</button>
+              <button onClick={handleDelete} className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">Xóa</button>
+            </div>
           </div>
         </div>
       )}

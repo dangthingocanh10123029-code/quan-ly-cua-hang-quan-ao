@@ -81,8 +81,8 @@ module.exports = {
           b.name as brand_name,
           b.slug as brand_slug,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN brands b ON p.brand_id = b.id
@@ -107,8 +107,8 @@ module.exports = {
           c.name as category_name,
           b.name as brand_name,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN brands b ON p.brand_id = b.id
@@ -133,8 +133,8 @@ module.exports = {
           c.name as category_name,
           b.name as brand_name,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count,
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count,
           pr.discount_value as sale_percent,
           pr.valid_until as sale_end_time
         FROM products p
@@ -168,8 +168,8 @@ module.exports = {
           c.name as category_name,
           b.name as brand_name,
           (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url,
-          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as avg_rating,
-          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE) as review_count
+          (SELECT AVG(rating) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as avg_rating,
+          (SELECT COUNT(*) FROM product_reviews WHERE product_id = p.id AND is_approved = TRUE AND is_active = TRUE) as review_count
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN brands b ON p.brand_id = b.id
@@ -292,10 +292,13 @@ module.exports = {
 
 // Helper: Enrich product với computed fields
 function enrichProduct(product) {
-  const discountPercent = product.compare_price && product.compare_price > product.price
-    ? Math.round((1 - product.price / product.compare_price) * 100)
-    : 0;
-  
+  //Ưu tiên sale_percent từ promotion flash_sale, không tính lại từ compare_price
+  const discountPercent = product.sale_percent
+    ? parseInt(product.sale_percent)
+    : (product.compare_price && product.compare_price > product.price
+      ? Math.round((1 - product.price / product.compare_price) * 100)
+      : 0);
+
   return {
     ...product,
     avg_rating: parseFloat(product.avg_rating) || 0,

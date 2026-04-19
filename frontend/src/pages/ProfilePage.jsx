@@ -1,83 +1,133 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
 import { formatPrice } from '../utils/formatPrice'
+import api from '../services/api'
+
+const NAV_ITEMS = [
+  { id: 'profile',    path: '/profile',    label: 'Hồ sơ cá nhân',      icon: 'person' },
+  { id: 'orders',     path: '/orders',      label: 'Đơn hàng của tôi',     icon: 'shopping_bag' },
+  { id: 'favorites',  path: '/favorites',   label: 'Danh sách yêu thích', icon: 'favorite' },
+]
+
+const STATUS_BADGE = {
+  pending:    { label: 'Chờ xác nhận',   bg: 'bg-[#eaedff]', text: 'text-[#4450b7]', dot: true },
+  confirmed:  { label: 'Đã xác nhận',     bg: 'bg-[#eaedff]', text: 'text-[#4450b7]', dot: true },
+  processing: { label: 'Đang xử lý',      bg: 'bg-[#eaedff]', text: 'text-[#6670cc]', dot: true },
+  shipped:    { label: 'Đang giao',        bg: 'bg-[#dae2fd]', text: 'text-[#3d55ae]', dot: true },
+  delivered:  { label: 'Đã giao',          bg: 'bg-[#f2f3ff]', text: 'text-[#454652]', dot: false },
+  cancelled:  { label: 'Đã hủy',            bg: 'bg-[#f2f3ff]', text: 'text-[#a5a6aa]', dot: false },
+  returned:   { label: 'Trả hàng',         bg: 'bg-[#f2f3ff]', text: 'text-[#a5a6aa]', dot: false },
+}
+
+function FieldLabel({ children }) {
+  return (
+    <p className="text-[11px] font-medium text-[#454652] uppercase tracking-[0.08em] mb-1">
+      {children}
+    </p>
+  )
+}
+
+function FieldValue({ children }) {
+  return (
+    <p className="text-base font-medium text-[#131b2e] leading-snug">
+      {children || <span className="text-[#a5a6aa] italic">Chưa cập nhật</span>}
+    </p>
+  )
+}
+
+function InputField({ label, value, onChange, type = 'text', placeholder, required }) {
+  return (
+    <div>
+      <FieldLabel>{label}{required && ' *'}</FieldLabel>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full bg-[#f2f3ff] px-4 py-3 rounded-lg text-[#131b2e] text-sm placeholder:text-[#a5a6aa] outline-none
+          focus:bg-white focus:ring-2 focus:ring-[#4450b7]/20 focus:ring-offset-0 transition-all duration-200"
+      />
+    </div>
+  )
+}
+
+function SelectField({ label, value, onChange, options }) {
+  return (
+    <div>
+      <FieldLabel>{label}</FieldLabel>
+      <select
+        value={value}
+        onChange={onChange}
+        className="w-full bg-[#f2f3ff] px-4 py-3 rounded-lg text-[#131b2e] text-sm outline-none
+          focus:bg-white focus:ring-2 focus:ring-[#4450b7]/20 transition-all duration-200 cursor-pointer"
+      >
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
+    </div>
+  )
+}
 
 const ProfilePage = () => {
-  const { user, isAuthenticated, updateUser, logout, loading } = useAuth()
+  const { user, isAuthenticated, updateUser, logout, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+
   const [activeTab, setActiveTab] = useState('profile')
   const [isEditing, setIsEditing] = useState(false)
+  const [orders, setOrders] = useState([])
+  const [ordersLoading, setOrdersLoading] = useState(false)
   const [editForm, setEditForm] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    birthDate: user?.birthDate || '',
-    gender: user?.gender || ''
+    name: '', email: '', phone: '', birthDate: '', gender: ''
   })
+  const [saving, setSaving] = useState(false)
 
-  // Redirect if not logged in
-  React.useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate('/login')
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) navigate('/login')
+  }, [authLoading, isAuthenticated, navigate])
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setEditForm({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        birthDate: user.birthDate || '',
+        gender: user.gender || ''
+      })
     }
-  }, [isAuthenticated, loading, navigate])
+  }, [user, isAuthenticated])
 
-  const orders = [
-    {
-      id: 'LM-28491',
-      name: 'Áo Khoác Wool Oversized',
-      image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=200',
-      date: '22/05/2024',
-      price: 2450000,
-      status: 'delivering'
-    },
-    {
-      id: 'LM-27103',
-      name: 'Giày Sneaker Performance X',
-      image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200',
-      date: '10/05/2024',
-      price: 1890000,
-      status: 'completed'
-    },
-    {
-      id: 'LM-25847',
-      name: 'Quần Jean Slim Fit Premium',
-      image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=200',
-      date: '28/04/2024',
-      price: 890000,
-      status: 'completed'
-    }
-  ]
+  useEffect(() => {
+    if (isAuthenticated) fetchOrders()
+  }, [isAuthenticated])
 
-  const menuItems = [
-    { id: 'profile', icon: 'person', label: 'Hồ sơ cá nhân', active: true },
-    { id: 'orders', icon: 'shopping_bag', label: 'Đơn hàng của tôi' },
-    { id: 'favorites', icon: 'favorite', label: 'Danh sách yêu thích' },
-    { id: 'addresses', icon: 'location_on', label: 'Sổ địa chỉ' },
-    { id: 'logout', icon: 'logout', label: 'Đăng xuất', danger: true }
-  ]
+  const fetchOrders = async () => {
+    setOrdersLoading(true)
+    try {
+      const res = await api.get('/orders')
+      if (res.success) setOrders(res.orders || [])
+      else setOrders([])
+    } catch { setOrders([]) } finally { setOrdersLoading(false) }
+  }
 
   const handleEdit = () => {
     setEditForm({
-      name: user?.name || '',
-      email: user?.email || '',
-      phone: user?.phone || '',
-      birthDate: user?.birthDate || '',
-      gender: user?.gender || ''
+      name: user?.name || '', email: user?.email || '',
+      phone: user?.phone || '', birthDate: user?.birthDate || '', gender: user?.gender || ''
     })
     setIsEditing(true)
   }
 
-  const handleSave = () => {
-    updateUser(editForm)
-    setIsEditing(false)
-  }
-
-  const handleCancel = () => {
-    setIsEditing(false)
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      updateUser(editForm)
+      setIsEditing(false)
+    } finally { setSaving(false) }
   }
 
   const handleLogout = () => {
@@ -87,322 +137,335 @@ const ProfilePage = () => {
     }
   }
 
-  const getStatusBadge = (status) => {
-    const badges = {
-      delivering: { bg: 'bg-secondary-container', text: 'text-on-secondary-container', dot: true, label: 'Đang giao' },
-      completed: { bg: 'bg-surface-variant', text: 'text-on-surface-variant', dot: false, label: 'Đã hoàn thành' },
-      processing: { bg: 'bg-primary-fixed', text: 'text-on-primary-fixed', dot: true, label: 'Đang xử lý' },
-      cancelled: { bg: 'bg-error-container', text: 'text-on-error-container', dot: false, label: 'Đã hủy' }
-    }
-    return badges[status] || badges.processing
+  const formatDate = (dateStr) => {
+    if (!dateStr) return ''
+    try {
+      return new Date(dateStr).toLocaleDateString('vi-VN', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      })
+    } catch { return dateStr }
   }
 
-  if (loading) {
+  if (authLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="material-symbols-outlined text-4xl animate-spin text-primary">progress_activity</span>
+      <div className="min-h-screen bg-[#faf8ff] flex items-center justify-center">
+        <span className="material-symbols-outlined text-4xl animate-spin text-[#4450b7]">progress_activity</span>
       </div>
     )
   }
 
-  if (!isAuthenticated || !user) {
-    return null
-  }
+  if (!isAuthenticated || !user) return null
+
+  const hasRealOrders = orders.length > 0
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#faf8ff]">
       <Header cartCount={0} />
-      
+
       <main className="pt-20 max-w-screen-2xl mx-auto px-6 md:px-12 py-12">
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Sidebar Navigation */}
-          <aside className="w-full lg:w-72 shrink-0">
-            <div className="bg-surface-container-low rounded-xl p-6 flex flex-col gap-2 sticky top-32">
-              <div className="mb-6 px-4">
-                <h2 className="font-headline text-on-surface-variant text-xs font-bold uppercase tracking-widest">Tài khoản</h2>
+        <div className="flex flex-col lg:flex-row gap-10">
+
+          {/* ===== SIDEBAR ===== */}
+          <aside className="lg:w-64 shrink-0 lg:sticky lg:top-[88px] lg:self-start">
+            {/* User summary card */}
+            <div className="bg-white rounded-2xl p-5 mb-3"
+              style={{ boxShadow: '0 20px 40px rgba(19, 27, 46, 0.06)' }}>
+              <div className="flex items-center gap-4">
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name}
+                    className="w-12 h-12 rounded-full object-cover ring-2 ring-[#eaedff]" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-[#4450b7] flex items-center justify-center
+                    text-white font-bold text-lg font-['Space_Grotesk'] shrink-0">
+                    {user.name ? user.name.charAt(0).toUpperCase() : '?'}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="font-semibold text-[#131b2e] truncate leading-tight">{user.name || 'Khách hàng'}</p>
+                  <p className="text-xs text-[#454652] mt-0.5 truncate">{user.email}</p>
+                </div>
               </div>
-              <nav className="flex flex-col gap-1">
-                <Link
-                  to="/profile"
-                  onClick={() => setActiveTab('profile')}
-                  className={`relative flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
-                    activeTab === 'profile'
-                      ? 'bg-surface-container text-primary font-medium'
-                      : 'text-on-surface-variant hover:bg-surface-container/50'
-                  }`}
-                >
-                  {activeTab === 'profile' && (
-                    <div className="absolute left-0 w-1 h-6 bg-primary rounded-r"></div>
-                  )}
-                  <span className="material-symbols-outlined text-lg">person</span>
-                  <span>Hồ sơ cá nhân</span>
-                </Link>
-                <Link
-                  to="#"
-                  onClick={() => setActiveTab('orders')}
-                  className={`relative flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
-                    activeTab === 'orders'
-                      ? 'bg-surface-container text-primary font-medium'
-                      : 'text-on-surface-variant hover:bg-surface-container/50'
-                  }`}
-                >
-                  {activeTab === 'orders' && (
-                    <div className="absolute left-0 w-1 h-6 bg-primary rounded-r"></div>
-                  )}
-                  <span className="material-symbols-outlined text-lg">shopping_bag</span>
-                  <span>Đơn hàng của tôi</span>
-                </Link>
-                <Link
-                  to="#"
-                  onClick={() => setActiveTab('favorites')}
-                  className={`relative flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
-                    activeTab === 'favorites'
-                      ? 'bg-surface-container text-primary font-medium'
-                      : 'text-on-surface-variant hover:bg-surface-container/50'
-                  }`}
-                >
-                  {activeTab === 'favorites' && (
-                    <div className="absolute left-0 w-1 h-6 bg-primary rounded-r"></div>
-                  )}
-                  <span className="material-symbols-outlined text-lg">favorite</span>
-                  <span>Danh sách yêu thích</span>
-                </Link>
-                <Link
-                  to="#"
-                  onClick={() => setActiveTab('addresses')}
-                  className={`relative flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
-                    activeTab === 'addresses'
-                      ? 'bg-surface-container text-primary font-medium'
-                      : 'text-on-surface-variant hover:bg-surface-container/50'
-                  }`}
-                >
-                  {activeTab === 'addresses' && (
-                    <div className="absolute left-0 w-1 h-6 bg-primary rounded-r"></div>
-                  )}
-                  <span className="material-symbols-outlined text-lg">location_on</span>
-                  <span>Sổ địa chỉ</span>
-                </Link>
-                <div className="my-4 h-px bg-outline-variant/30 mx-4"></div>
-                <button
-                  onClick={handleLogout}
-                  className="relative flex items-center gap-4 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-all w-full text-left"
-                >
-                  <span className="material-symbols-outlined text-lg">logout</span>
-                  <span>Đăng xuất</span>
-                </button>
-              </nav>
             </div>
+
+            {/* Navigation */}
+            <nav className="bg-[#f2f3ff] rounded-2xl p-2 flex flex-col gap-0.5">
+              {NAV_ITEMS.map(item => {
+                const isActive = activeTab === item.id
+                return (
+                  <Link
+                    key={item.id}
+                    to={item.path}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                      isActive
+                        ? 'bg-white text-[#4450b7] font-semibold'
+                        : 'text-[#454652] hover:bg-white/60 hover:text-[#131b2e]'
+                    }`}
+                    style={isActive ? { boxShadow: '0 8px 16px rgba(19, 27, 46, 0.05)' } : {}}
+                  >
+                    {isActive && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#4450b7] rounded-r-full" />
+                    )}
+                    <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                    <span className="text-sm">{item.label}</span>
+                  </Link>
+                )
+              })}
+
+              {/* Divider - tonal shift */}
+              <div className="my-1 h-px bg-[#dae2fd]/40 mx-3" />
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                  text-[#454652] hover:bg-white/60 hover:text-[#c9392c] w-full text-left group"
+              >
+                <span className="material-symbols-outlined text-xl">logout</span>
+                <span className="text-sm">Đăng xuất</span>
+              </button>
+            </nav>
           </aside>
 
-          {/* Content Area */}
-          <div className="flex-1 space-y-12">
-            {/* User Profile Section */}
-            <section>
-              <div className="flex justify-between items-end mb-8">
-                <div>
-                  <h1 className="font-headline text-4xl font-bold tracking-tight text-on-surface">Hồ sơ cá nhân</h1>
-                  <p className="text-on-surface-variant mt-2">Quản lý thông tin cá nhân và bảo mật tài khoản</p>
-                </div>
+          {/* ===== MAIN CONTENT ===== */}
+          <div className="flex-1 min-w-0 space-y-8">
+
+            {/* Profile Header */}
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <h1 className="font-['Space_Grotesk'] text-xl font-bold tracking-tight text-[#131b2e] leading-none mt-6">
+                  Hồ sơ cá nhân
+                </h1>
               </div>
+              {!isEditing && (
+                <button
+                  onClick={handleEdit}
+                  className="shrink-0 px-5 py-2.5 bg-gradient-to-br from-[#4450b7] to-[#5e6ad2] text-white text-sm font-medium rounded-lg
+                    hover:opacity-90 transition-all duration-200 flex items-center gap-2"
+                  style={{ boxShadow: '0 8px 20px rgba(68, 80, 183, 0.25)' }}
+                >
+                  <span className="material-symbols-outlined text-base">edit</span>
+                  Chỉnh sửa
+                </button>
+              )}
+            </div>
 
-              <div className="bg-surface-container-lowest rounded-2xl p-8 border border-outline-variant/20">
-                <div className="flex flex-col lg:flex-row gap-12">
-                  {/* Avatar Column */}
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="relative group">
-                      <img
-                        src={user.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop'}
-                        alt="Ảnh đại diện"
-                        className="w-32 h-32 rounded-full object-cover border-4 border-surface-container shadow-md"
-                      />
-                      <button className="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
-                        <span className="material-symbols-outlined text-sm">edit</span>
-                      </button>
-                    </div>
-                    <span className="text-xs font-label text-on-surface-variant uppercase tracking-wider">
-                      Thành viên {user.memberLevel || 'Bronze'}
-                    </span>
-                  </div>
+            {/* Profile Card */}
+            <div className="bg-white rounded-2xl p-8"
+              style={{ boxShadow: '0 20px 40px rgba(19, 27, 46, 0.06)' }}>
 
-                  {/* Info Grid */}
-                  {isEditing ? (
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Họ và tên</label>
-                        <input
-                          type="text"
-                          value={editForm.name}
-                          onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                          className="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Email</label>
-                        <input
-                          type="email"
-                          value={editForm.email}
-                          onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                          className="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Số điện thoại</label>
-                        <input
-                          type="tel"
-                          value={editForm.phone}
-                          onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                          className="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Ngày sinh</label>
-                        <input
-                          type="text"
-                          value={editForm.birthDate}
-                          onChange={(e) => setEditForm({ ...editForm, birthDate: e.target.value })}
-                          className="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-label text-on-surface-variant uppercase tracking-wider mb-2">Giới tính</label>
-                        <select
-                          value={editForm.gender}
-                          onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
-                          className="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"
-                        >
-                          <option value="">Chọn giới tính</option>
-                          <option value="Nam">Nam</option>
-                          <option value="Nữ">Nữ</option>
-                          <option value="Khác">Khác</option>
-                        </select>
-                      </div>
-                      <div className="md:col-span-2 flex items-center justify-end gap-4 pt-4">
-                        <button
-                          onClick={handleCancel}
-                          className="px-6 py-3 border border-outline text-on-surface rounded-lg hover:bg-surface-container transition-all"
-                        >
-                          Hủy
-                        </button>
-                        <button
-                          onClick={handleSave}
-                          className="px-8 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary font-medium rounded-lg shadow-lg shadow-primary/20 hover:opacity-90 transition-all flex items-center gap-2"
-                        >
-                          <span className="material-symbols-outlined text-sm">save</span>
-                          Lưu thay đổi
-                        </button>
-                      </div>
-                    </div>
+              {/* Avatar + member level */}
+              <div className="flex items-center gap-5 mb-10">
+                <div className="relative">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="Ảnh đại diện"
+                      className="w-24 h-24 rounded-2xl object-cover" />
                   ) : (
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-label text-on-surface-variant uppercase tracking-wider">Họ và tên</label>
-                        <p className="text-lg font-medium text-on-surface">{user.name || 'Chưa cập nhật'}</p>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-label text-on-surface-variant uppercase tracking-wider">Email</label>
-                        <p className="text-lg font-medium text-on-surface">{user.email || 'Chưa cập nhật'}</p>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-label text-on-surface-variant uppercase tracking-wider">Số điện thoại</label>
-                        <p className="text-lg font-medium text-on-surface">{user.phone || 'Chưa cập nhật'}</p>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-label text-on-surface-variant uppercase tracking-wider">Ngày sinh</label>
-                        <p className="text-lg font-medium text-on-surface">{user.birthDate || 'Chưa cập nhật'}</p>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-label text-on-surface-variant uppercase tracking-wider">Giới tính</label>
-                        <p className="text-lg font-medium text-on-surface">{user.gender || 'Chưa cập nhật'}</p>
-                      </div>
-                      <div className="flex items-center justify-end md:col-span-2 pt-4">
-                        <button
-                          onClick={handleEdit}
-                          className="px-8 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary font-medium rounded-lg shadow-lg shadow-primary/20 hover:opacity-90 transition-all flex items-center gap-2"
-                        >
-                          <span className="material-symbols-outlined text-sm">edit</span>
-                          Chỉnh sửa thông tin
-                        </button>
-                      </div>
+                    <div className="w-24 h-24 rounded-2xl bg-[#4450b7] flex items-center justify-center
+                      text-white font-bold text-4xl font-['Space_Grotesk']">
+                      {user.name ? user.name.charAt(0).toUpperCase() : '?'}
                     </div>
                   )}
+                  <button className="absolute -bottom-2 -right-2 w-9 h-9 bg-[#4450b7] text-white rounded-xl flex items-center justify-center
+                    hover:opacity-80 transition-all"
+                    style={{ boxShadow: '0 4px 12px rgba(68, 80, 183, 0.35)' }}>
+                    <span className="material-symbols-outlined text-base">photo_camera</span>
+                  </button>
+                </div>
+                <div>
+                  <p className="font-['Space_Grotesk'] text-xl font-bold text-[#131b2e]">{user.name || 'Chưa cập nhật'}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="px-3 py-1 bg-[#eaedff] text-[#4450b7] text-xs font-semibold rounded-full">
+                      Thành viên {user.memberLevel || 'Bronze'}
+                    </span>
+                    {user.email && (
+                      <span className="text-xs text-[#454652]">{user.email}</span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </section>
 
-            {/* Recent Orders Section */}
-            <section>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-headline text-2xl font-bold text-on-surface">Đơn hàng gần đây</h2>
-                <Link to="/orders" className="text-primary font-medium hover:underline flex items-center gap-1">
-                  Xem tất cả <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                {orders.map((order) => {
-                  const badge = getStatusBadge(order.status)
-                  return (
-                    <div
-                      key={order.id}
-                      className="bg-surface-container-low hover:bg-surface-container transition-all p-6 rounded-xl flex flex-wrap md:flex-nowrap items-center justify-between gap-6 group cursor-pointer"
+              {/* Info Grid */}
+              {isEditing ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                  <InputField label="Họ và tên" value={editForm.name}
+                    onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                    placeholder="Nguyễn Văn A" required />
+                  <InputField label="Email" value={editForm.email} type="email"
+                    onChange={e => setEditForm({ ...editForm, email: e.target.value })}
+                    placeholder="email@example.com" />
+                  <InputField label="Số điện thoại" value={editForm.phone} type="tel"
+                    onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
+                    placeholder="0912 345 678" />
+                  <InputField label="Ngày sinh" value={editForm.birthDate}
+                    onChange={e => setEditForm({ ...editForm, birthDate: e.target.value })}
+                    placeholder="15/05/1995" />
+                  <SelectField label="Giới tính" value={editForm.gender}
+                    onChange={e => setEditForm({ ...editForm, gender: e.target.value })}
+                    options={[
+                      { value: '', label: 'Chọn giới tính' },
+                      { value: 'Nam', label: 'Nam' },
+                      { value: 'Nữ', label: 'Nữ' },
+                      { value: 'Khác', label: 'Khác' },
+                    ]} />
+                  <div className="flex items-end gap-3 md:col-span-2 pt-2">
+                    <button
+                      onClick={() => setIsEditing(false)}
+                      className="px-6 py-3 bg-[#f2f3ff] text-[#454652] text-sm font-medium rounded-xl hover:bg-[#dae2fd]/40 transition-all"
                     >
-                      <div className="flex items-center gap-6 flex-1">
-                        <div className="w-16 h-20 bg-surface-container-highest rounded-lg overflow-hidden">
-                          <img
-                            src={order.image}
-                            alt={order.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <span className="text-xs font-label text-outline uppercase tracking-wider">#{order.id}</span>
-                          <h3 className="font-medium text-on-surface">{order.name}</h3>
-                          <p className="text-sm text-on-surface-variant">Ngày đặt: {order.date}</p>
-                        </div>
-                      </div>
-                      <div className="text-right flex flex-col md:items-end gap-2">
-                        <div className={`px-3 py-1 ${badge.bg} ${badge.text} rounded text-xs font-bold uppercase tracking-tight flex items-center gap-1.5`}>
-                          {badge.dot && <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>}
-                          {badge.label}
-                        </div>
-                        <p className="font-headline font-bold text-lg">{formatPrice(order.price)}</p>
-                      </div>
-                    </div>
-                  )
-                })}
+                      Hủy
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      disabled={saving}
+                      className="px-8 py-3 bg-gradient-to-br from-[#4450b7] to-[#5e6ad2] text-white text-sm font-medium rounded-xl
+                        hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-60"
+                      style={{ boxShadow: '0 8px 20px rgba(68, 80, 183, 0.25)' }}
+                    >
+                      {saving ? (
+                        <><span className="material-symbols-outlined text-base animate-spin">progress_activity</span> Đang lưu...</>
+                      ) : (
+                        <><span className="material-symbols-outlined text-base">save</span> Lưu thay đổi</>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                  <div>
+                    <FieldLabel>Họ và tên</FieldLabel>
+                    <FieldValue>{user.name}</FieldValue>
+                  </div>
+                  <div>
+                    <FieldLabel>Email</FieldLabel>
+                    <FieldValue>{user.email}</FieldValue>
+                  </div>
+                  <div>
+                    <FieldLabel>Số điện thoại</FieldLabel>
+                    <FieldValue>{user.phone}</FieldValue>
+                  </div>
+                  <div>
+                    <FieldLabel>Ngày sinh</FieldLabel>
+                    <FieldValue>{user.birthDate}</FieldValue>
+                  </div>
+                  <div>
+                    <FieldLabel>Giới tính</FieldLabel>
+                    <FieldValue>{user.gender}</FieldValue>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Recent Orders */}
+            <div>
+              <div className="flex items-end justify-between mb-5">
+                <div>
+                  <h2 className="font-['Space_Grotesk'] text-lg font-bold text-[#131b2e] tracking-tight leading-none">
+                    Đơn hàng gần đây
+                  </h2>
+                </div>
+                {hasRealOrders && (
+                  <Link to="/orders"
+                    className="flex items-center gap-1 text-[#4450b7] text-sm font-medium hover:gap-2 transition-all duration-200">
+                    Xem tất cả
+                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                  </Link>
+                )}
               </div>
-            </section>
+
+              {ordersLoading ? (
+                <div className="bg-[#f2f3ff] rounded-2xl p-10 flex flex-col items-center gap-4">
+                  <span className="material-symbols-outlined text-3xl animate-spin text-[#4450b7]">progress_activity</span>
+                  <p className="text-sm text-[#454652]">Đang tải đơn hàng...</p>
+                </div>
+              ) : !hasRealOrders ? (
+                <div className="bg-[#f2f3ff] rounded-2xl p-12 flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-[#dae2fd] flex items-center justify-center mb-5">
+                    <span className="material-symbols-outlined text-3xl text-[#4450b7]">shopping_bag</span>
+                  </div>
+                  <p className="font-['Space_Grotesk'] text-lg font-semibold text-[#131b2e] mb-2">
+                    Bạn chưa có đơn hàng nào
+                  </p>
+                  <p className="text-sm text-[#454652] mb-6">
+                    Hãy bắt đầu mua sắm để có đơn hàng đầu tiên
+                  </p>
+                  <Link to="/"
+                    className="px-7 py-3 bg-gradient-to-br from-[#4450b7] to-[#5e6ad2] text-white text-sm font-medium rounded-xl
+                      hover:opacity-90 transition-all"
+                    style={{ boxShadow: '0 8px 20px rgba(68, 80, 183, 0.25)' }}>
+                    Khám phá sản phẩm
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {orders.slice(0, 5).map(order => {
+                    const badge = STATUS_BADGE[order.status] || STATUS_BADGE.pending
+                    return (
+                      <Link
+                        key={order.id}
+                        to="/orders"
+                        onClick={() => setActiveTab('orders')}
+                        className="bg-white rounded-2xl p-5 flex items-center gap-5
+                          hover:bg-[#f2f3ff] transition-all duration-200 group"
+                        style={{ boxShadow: '0 8px 24px rgba(19, 27, 46, 0.05)' }}
+                      >
+                        {/* Thumbnail */}
+                        <div className="w-14 h-14 rounded-xl bg-[#f2f3ff] overflow-hidden flex items-center justify-center shrink-0">
+                          {order.first_image ? (
+                            <img src={order.first_image} alt=""
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          ) : (
+                            <span className="material-symbols-outlined text-2xl text-[#a5a6aa]">inventory_2</span>
+                          )}
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="text-xs font-medium text-[#a5a6aa] uppercase tracking-wider">
+                              #{order.order_number}
+                            </span>
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${badge.bg} ${badge.text}`}>
+                              {badge.label}
+                            </span>
+                          </div>
+                          <p className="text-sm font-medium text-[#131b2e]">{order.item_count} sản phẩm</p>
+                          <p className="text-xs text-[#454652] mt-0.5">{formatDate(order.created_at)}</p>
+                        </div>
+
+                        {/* Price */}
+                        <div className="text-right shrink-0">
+                          <p className="font-['Space_Grotesk'] font-bold text-base text-[#131b2e]">
+                            {formatPrice(order.total_price)}
+                          </p>
+                          <span className="material-symbols-outlined text-lg text-[#a5a6aa] group-hover:text-[#4450b7] transition-colors">
+                            chevron_right
+                          </span>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
 
             {/* Quick Actions */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Link to="/favorites" className="bg-surface-container-low hover:bg-surface-container transition-all p-6 rounded-xl flex items-center gap-4 group">
-                <div className="w-12 h-12 rounded-full bg-error-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-error">favorite</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link to="/favorites"
+                className="bg-white rounded-2xl p-5 flex items-center gap-4 hover:bg-[#f2f3ff] transition-all duration-200 group"
+                style={{ boxShadow: '0 8px 24px rgba(19, 27, 46, 0.05)' }}>
+                <div className="w-11 h-11 rounded-xl bg-[#fef0f0] flex items-center justify-center shrink-0
+                  group-hover:bg-[#fedcdc] transition-colors">
+                  <span className="material-symbols-outlined text-xl text-[#e05c5c]">favorite</span>
                 </div>
                 <div>
-                  <h3 className="font-headline font-semibold text-on-surface">Yêu thích</h3>
-                  <p className="text-sm text-on-surface-variant">5 sản phẩm</p>
+                  <p className="font-semibold text-[#131b2e] text-sm">Yêu thích</p>
+                  <p className="text-xs text-[#454652]">Xem sản phẩm đã lưu</p>
                 </div>
+                <span className="material-symbols-outlined text-lg text-[#a5a6aa] ml-auto group-hover:text-[#4450b7] transition-colors">
+                  arrow_forward
+                </span>
               </Link>
-              <Link to="/addresses" className="bg-surface-container-low hover:bg-surface-container transition-all p-6 rounded-xl flex items-center gap-4 group">
-                <div className="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-tertiary">location_on</span>
-                </div>
-                <div>
-                  <h3 className="font-headline font-semibold text-on-surface">Địa chỉ</h3>
-                  <p className="text-sm text-on-surface-variant">2 địa chỉ đã lưu</p>
-                </div>
-              </Link>
-              <Link to="/settings" className="bg-surface-container-low hover:bg-surface-container transition-all p-6 rounded-xl flex items-center gap-4 group">
-                <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-secondary">settings</span>
-                </div>
-                <div>
-                  <h3 className="font-headline font-semibold text-on-surface">Cài đặt</h3>
-                  <p className="text-sm text-on-surface-variant">Bảo mật & Privacy</p>
-                </div>
-              </Link>
-            </section>
+            </div>
           </div>
         </div>
       </main>

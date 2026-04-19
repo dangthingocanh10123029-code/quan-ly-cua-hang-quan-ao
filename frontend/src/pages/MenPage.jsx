@@ -5,6 +5,8 @@ import Footer from '../components/Footer'
 import Newsletter from '../components/Newsletter'
 import { productAPI } from '../services/api'
 import { formatPrice } from '../utils/formatPrice'
+import { useCart } from '../contexts/CartContext'
+import { useToast } from '../contexts/ToastContext'
 
 const StarRating = ({ rating = 0 }) => {
   return (
@@ -25,6 +27,8 @@ const StarRating = ({ rating = 0 }) => {
 }
 
 const MenPage = () => {
+  const { addItem } = useCart()
+  const toast = useToast()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   
@@ -230,7 +234,8 @@ const MenPage = () => {
   const handleAddToCart = (e, product) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('Added to cart:', product.slug)
+    addItem(product, 1, null, null)
+    toast.success(`Đã thêm "${product.name}" vào giỏ hàng!`)
   }
 
   const handleQuickView = (e, product) => {
@@ -403,7 +408,7 @@ const MenPage = () => {
                       >
                         <img
                           alt={product.name}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 group-hover:brightness-50 transition-all duration-700"
                           src={product.image_url || product.image}
                           loading="lazy"
                         />
@@ -421,10 +426,10 @@ const MenPage = () => {
                         )}
 
                         {/* Action Buttons */}
-                        <div className="product-action absolute inset-0 bg-black/5 opacity-0 flex flex-col justify-end p-6 transition-all duration-300 transform translate-y-4">
+                        <div className="product-action absolute inset-0 bg-black/40 opacity-0 flex flex-col justify-end p-6 transition-all duration-300 group-hover:opacity-100">
                           <button
                             onClick={(e) => handleAddToCart(e, product)}
-                            className="w-full bg-white text-on-surface py-4 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors mb-2"
+                            className="w-full bg-white text-on-surface py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#4F46E5] hover:text-white transition-colors mb-2"
                           >
                             Thêm vào giỏ
                           </button>

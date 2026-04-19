@@ -5,6 +5,8 @@ import Footer from '../components/Footer'
 import Newsletter from '../components/Newsletter'
 import { productAPI } from '../services/api'
 import { formatPrice } from '../utils/formatPrice'
+import { useCart } from '../contexts/CartContext'
+import { useToast } from '../contexts/ToastContext'
 
 const StarRating = ({ rating = 0 }) => {
   return (
@@ -25,6 +27,8 @@ const StarRating = ({ rating = 0 }) => {
 }
 
 const KidsPage = () => {
+  const { addItem } = useCart()
+  const toast = useToast()
   const navigate = useNavigate()
   
   const [products, setProducts] = useState([])
@@ -199,7 +203,8 @@ const KidsPage = () => {
   const handleAddToCart = (e, product) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('Added to cart:', product.slug)
+    addItem(product, 1, null, null)
+    toast.success(`Đã thêm "${product.name}" vào giỏ hàng!`)
   }
 
   const handleQuickView = (e, product) => {
@@ -383,7 +388,7 @@ const KidsPage = () => {
                       <img 
                         src={product.image || product.image_url || 'https://via.placeholder.com/400x533'}
                         alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:brightness-50"
                       />
                       
                       {/* Badges */}
@@ -401,17 +406,17 @@ const KidsPage = () => {
                       </div>
 
                       {/* Quick Actions */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="flex gap-2">
                           <button 
                             onClick={(e) => handleQuickView(e, product)}
-                            className="flex-1 bg-white text-on-surface py-2 rounded-lg text-xs font-bold uppercase hover:bg-primary hover:text-white transition-colors"
+                            className="flex-1 bg-white text-on-surface py-2 rounded-lg text-xs font-bold uppercase hover:bg-[#4F46E5] hover:text-white transition-colors"
                           >
                             Xem nhanh
                           </button>
                           <button 
                             onClick={(e) => handleAddToCart(e, product)}
-                            className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                            className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-[#4F46E5] hover:text-white transition-colors"
                           >
                             <span className="material-symbols-outlined text-lg">shopping_bag</span>
                           </button>

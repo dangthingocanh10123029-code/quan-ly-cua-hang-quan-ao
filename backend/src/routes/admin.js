@@ -33,8 +33,21 @@ router.use(authMiddleware)
 // Dashboard
 router.get('/dashboard', require('../controllers/adminController').getDashboard)
 
+// Notifications
+router.get('/notifications', require('../controllers/adminController').getNotifications)
+
 // Products
 router.get('/products', require('../controllers/adminController').getProducts)
+router.get('/sizes', async (req, res) => {
+  const db = require('../config/database')
+  const [rows] = await db.query('SELECT * FROM sizes WHERE is_active = 1 ORDER BY sort_order ASC')
+  res.json({ sizes: rows })
+})
+router.get('/colors', async (req, res) => {
+  const db = require('../config/database')
+  const [rows] = await db.query('SELECT * FROM colors WHERE is_active = 1 ORDER BY sort_order ASC')
+  res.json({ colors: rows })
+})
 router.get('/products/:id', require('../controllers/adminController').getProductById)
 router.post('/products', require('../controllers/adminController').createProduct)
 router.put('/products/:id', require('../controllers/adminController').updateProduct)
@@ -55,9 +68,12 @@ router.put('/brands/:id', require('../controllers/adminController').updateBrand)
 router.delete('/brands/:id', require('../controllers/adminController').deleteBrand)
 
 // Orders
+router.get('/orders/stats', require('../controllers/adminController').getOrderStats)
 router.get('/orders', require('../controllers/adminController').getOrders)
-router.put('/orders/:id/status', require('../controllers/adminController').updateOrderStatus)
 router.get('/orders/:id', require('../controllers/adminController').getOrderDetail)
+router.put('/orders/:id/status', require('../controllers/adminController').updateOrderStatus)
+router.put('/orders/:id/payment', require('../controllers/adminController').updatePaymentStatus)
+router.post('/orders/:id/cancel', require('../controllers/adminController').cancelOrder)
 
 // Customers
 router.get('/customers', require('../controllers/adminController').getCustomers)
@@ -86,13 +102,33 @@ router.delete('/coupons/:id', require('../controllers/adminController').deleteCo
 // Warehouse
 router.get('/warehouse', require('../controllers/adminController').getWarehouse)
 
+// Suppliers
+router.get('/suppliers', require('../controllers/adminController').getSuppliers)
+router.post('/suppliers', require('../controllers/adminController').createSupplier)
+router.put('/suppliers/:id', require('../controllers/adminController').updateSupplier)
+router.delete('/suppliers/:id', require('../controllers/adminController').deleteSupplier)
+
+// Warehouses management
+router.get('/warehouses', require('../controllers/adminController').getWarehouses)
+router.post('/warehouses', require('../controllers/adminController').createWarehouse)
+router.put('/warehouses/:id', require('../controllers/adminController').updateWarehouse)
+router.delete('/warehouses/:id', require('../controllers/adminController').deleteWarehouse)
+
 // Supplier Orders
 router.get('/supplier-orders', require('../controllers/adminController').getSupplierOrders)
+router.get('/supplier-orders/:id', require('../controllers/adminController').getSupplierOrderDetail)
+router.post('/supplier-orders', require('../controllers/adminController').createSupplierOrder)
+router.put('/supplier-orders/:id', require('../controllers/adminController').updateSupplierOrder)
+router.delete('/supplier-orders/:id', require('../controllers/adminController').deleteSupplierOrder)
+router.put('/supplier-orders/:id/receive', require('../controllers/adminController').receiveSupplierOrder)
+router.put('/supplier-orders/:id/status', require('../controllers/adminController').updateSupplierOrderStatus)
 
 // Reviews
 router.get('/reviews', require('../controllers/adminController').getReviews)
 router.put('/reviews/:id/approve', require('../controllers/adminController').approveReview)
 router.put('/reviews/:id/reply', require('../controllers/adminController').replyReview)
+router.put('/reviews/:id/toggle', require('../controllers/adminController').toggleReviewActive)
+router.delete('/reviews/:id', require('../controllers/adminController').deleteReview)
 
 // News/Blog
 router.get('/news', require('../controllers/adminController').getNews)

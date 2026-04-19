@@ -16,11 +16,15 @@ import ShippingPage from './pages/ShippingPage'
 import ReturnsPage from './pages/ReturnsPage'
 import PrivacyPage from './pages/PrivacyPage'
 import BlogPage from './pages/BlogPage'
+import BlogDetailPage from './pages/BlogDetailPage'
 import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import CheckoutPage from './pages/CheckoutPage'
 import ProfilePage from './pages/ProfilePage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
+import OrdersPage from './pages/OrdersPage'
+import WishlistPage from './pages/WishlistPage'
+
 import ErrorBoundary from './components/ErrorBoundary'
 import ScrollToTop from './components/ScrollToTop'
 import AdminLayout from './components/admin/AdminLayout'
@@ -82,12 +86,14 @@ function App() {
                 <Route path="/returns" element={<ReturnsPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/blog" element={<BlogPage />} />
-                <Route path="/blog/:slug" element={<BlogPage />} />
+                <Route path="/blog/:slug" element={<BlogDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/order-success" element={<OrderSuccessPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/favorites" element={<WishlistPage />} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />

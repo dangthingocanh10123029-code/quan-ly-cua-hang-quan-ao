@@ -1,18 +1,50 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useCart } from '../contexts/CartContext'
+import { useAuth } from '../contexts/AuthContext'
 
 const OrderSuccessPage = () => {
   const { clearCart, getItemCount } = useCart()
-  
+  const { isAuthenticated, loading: authLoading } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const orderData = location.state || {}
+  const orderNumber = orderData.order_number || null
+  const paymentMethod = orderData.payment_method || 'cod'
+
+  const PAYMENT_LABEL = {
+    cod: 'Thanh toán khi nhận hàng (COD)',
+    bank: 'Chuyển khoản ngân hàng',
+    vnpay: 'Thanh toán qua VNPay',
+    momo: 'Thanh toán qua MoMo',
+  }
+
   useEffect(() => {
-    // Clear cart after successful order
-    clearCart()
+    if (getItemCount() > 0) {
+      clearCart()
+    }
   }, [])
 
-  const orderNumber = `ORD-${Date.now().toString().slice(-8)}`
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      navigate('/login')
+    }
+  }, [authLoading, isAuthenticated, navigate])
+
+  const handleViewOrders = () => {
+    navigate('/orders')
+  }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <span className="material-symbols-outlined text-4xl animate-spin text-primary">progress_activity</span>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,9 +66,11 @@ const OrderSuccessPage = () => {
             Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.
           </p>
           
-          <p className="text-on-surface-variant mb-8">
-            Mã đơn hàng của bạn: <span className="font-headline font-bold text-primary">{orderNumber}</span>
-          </p>
+          {orderNumber && (
+            <p className="text-on-surface-variant mb-8">
+              Mã đơn hàng của bạn: <span className="font-headline font-bold text-primary">{orderNumber}</span>
+            </p>
+          )}
 
           {/* Order Info Card */}
           <div className="bg-surface-container-low rounded-2xl p-6 mb-8 text-left">
@@ -51,7 +85,7 @@ const OrderSuccessPage = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-on-surface-variant">Phương thức thanh toán:</span>
-                <span className="text-on-surface">Thanh toán khi nhận hàng</span>
+                <span className="text-on-surface">{PAYMENT_LABEL[paymentMethod] || paymentMethod}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-on-surface-variant">Dự kiến giao hàng:</span>
@@ -70,20 +104,20 @@ const OrderSuccessPage = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-on-primary font-headline font-semibold rounded-lg hover:bg-primary/90 transition-all"
             >
               <span className="material-symbols-outlined">home</span>
               Tiếp tục mua sắm
             </Link>
-            <Link 
-              to="/login" 
+            <button
+              onClick={handleViewOrders}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary text-primary font-headline font-semibold rounded-lg hover:bg-primary hover:text-on-primary transition-all"
             >
-              <span className="material-symbols-outlined">person</span>
+              <span className="material-symbols-outlined">shopping_bag</span>
               Xem đơn hàng
-            </Link>
+            </button>
           </div>
         </div>
       </main>

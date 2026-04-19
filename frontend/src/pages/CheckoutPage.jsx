@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useCart } from '../contexts/CartContext'
+import { useAuth } from '../contexts/AuthContext'
+import { useToast } from '../contexts/ToastContext'
+import { orderAPI } from '../services/api'
 import { formatPrice } from '../utils/formatPrice'
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const { items, getCartTotal, getItemCount, clearCart } = useCart()
+  const { isAuthenticated, loading: authLoading, user } = useAuth()
+  const toast = useToast()
   const [loading, setLoading] = useState(false)
-  
+
   const [formData, setFormData] = useState({
     // Contact
     email: '',
@@ -38,23 +43,85 @@ const CheckoutPage = () => {
   const shipping = 0 // Miễn phí vận chuyển
   const total = subtotal + shipping
 
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      navigate('/login')
+    }
+  }, [authLoading, isAuthenticated, navigate])
+
+  // Auto-fill personal info from auth user
+  useEffect(() => {
+    if (user) {
+      const nameParts = (user.name || '').trim().split(' ')
+      const lastName = nameParts.pop() || ''
+      const firstName = nameParts.join(' ')
+      setFormData(prev => ({
+        ...prev,
+        email: user.email || '',
+        phone: user.phone || '',
+        firstName: prev.firstName || firstName,
+        lastName: prev.lastName || lastName,
+      }))
+    }
+  }, [user])
+
+  const buildShippingAddress = () => {
+    const parts = [formData.address, formData.apartment, formData.ward, formData.district, formData.city]
+      .filter(Boolean)
+      .join(', ')
+    return parts
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    
-    // Simulate API call for order creation
+
     try {
-      // In real app, call API here
-      // const response = await orderAPI.createOrder({ ...formData, items, total })
-      
-      setTimeout(() => {
+      const orderItems = items.map(item => ({
+        product_id: item.product_id,
+        product_name: item.name,
+        product_image: item.image,
+        unit_price: item.price,
+        quantity: item.quantity,
+        size: item.size,
+        color: item.color,
+      }))
+
+      const payload = {
+        items: orderItems,
+        shipping_address: buildShippingAddress(),
+        recipient_name: `${formData.firstName} ${formData.lastName}`.trim(),
+        recipient_phone: formData.phone,
+        ward: formData.ward,
+        district: formData.district,
+        city: formData.city,
+        shipping_fee: shipping,
+        discount_amount: 0,
+        payment_method: formData.paymentMethod,
+        payment_status: formData.paymentMethod === 'cod' ? 'unpaid' : 'paid',
+        note: formData.note,
+      }
+
+      const res = await orderAPI.createOrder(payload)
+
+      if (res.success) {
+        clearCart()
+        toast.success('Đặt hàng thành công! Cảm ơn bạn đã mua sắm.')
+        navigate('/order-success', {
+          state: {
+            order_number: res.order.order_number,
+            order_id: res.order.id,
+            payment_method: formData.paymentMethod
+          }
+        })
+      } else {
+        toast.error(res.message || 'Có lỗi xảy ra. Vui lòng thử lại.')
         setLoading(false)
-        clearCart() // Clear cart after successful order
-        navigate('/order-success')
-      }, 2000)
-    } catch (error) {
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.')
       setLoading(false)
-      alert('Có lỗi xảy ra. Vui lòng thử lại.')
     }
   }
 

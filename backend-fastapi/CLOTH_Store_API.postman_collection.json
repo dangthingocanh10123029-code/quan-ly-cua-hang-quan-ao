@@ -1,0 +1,1388 @@
+{
+  "info": {
+    "name": "CLOTH Store API",
+    "description": "E-commerce API documentation - FastAPI Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8001",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"]
+            },
+            "description": "Root endpoint"
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Health check endpoint"
+          }
+        },
+        {
+          "name": "Home Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/home",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home"]
+            },
+            "description": "Get all homepage data (banners, featured products, flash sales, etc.)"
+          }
+        },
+        {
+          "name": "Products List",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products?category=ao-nam&brand=gucci&gender=nam&min_price=100000&max_price=500000&sort=price&order=asc&page=1&limit=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {"key": "category", "value": "ao-nam", "description": "Filter by category slug"},
+                {"key": "brand", "value": "gucci", "description": "Filter by brand slug"},
+                {"key": "gender", "value": "nam", "description": "Filter by gender (nam/nu/unisex)"},
+                {"key": "age_group", "value": "adult", "description": "Filter by age group (adult/kids)"},
+                {"key": "min_price", "value": "100000", "description": "Min price filter"},
+                {"key": "max_price", "value": "500000", "description": "Max price filter"},
+                {"key": "sort", "value": "created_at", "description": "Sort by (created_at/price/name/total_sold/view_count)"},
+                {"key": "order", "value": "desc", "description": "Sort order (asc/desc)"},
+                {"key": "page", "value": "1", "description": "Page number"},
+                {"key": "limit", "value": "12", "description": "Items per page"}
+              ]
+            },
+            "description": "Get products with filters"
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/search?q=ao",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "search"],
+              "query": [
+                {"key": "q", "value": "ao", "description": "Search query (min 2 characters)", "disabled": false}
+              ]
+            },
+            "description": "Search products by name, description, or brand"
+          }
+        },
+        {
+          "name": "Kids Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/kids-categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "kids-categories"]
+            },
+            "description": "Get kids product categories with counts"
+          }
+        },
+        {
+          "name": "Product Detail",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/ao-thun-nam-cao-cap",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{slug}}"]
+            },
+            "description": "Get product detail by slug. Replace {{slug}} with actual product slug"
+          }
+        },
+        {
+          "name": "News List",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/news?category=sale&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "news"],
+              "query": [
+                {"key": "category", "value": "sale", "description": "Filter by news category (optional)"},
+                {"key": "limit", "value": "20", "description": "Number of items"}
+              ]
+            },
+            "description": "Get news list"
+          }
+        },
+        {
+          "name": "News Detail",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/news/uu-dai-mua-he-2026",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "news", "{{slug}}"]
+            },
+            "description": "Get news article by slug. Replace {{slug}} with actual news slug"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Nguyen Van A\",\n    \"email\": \"test@example.com\",\n    \"password\": \"123456\",\n    \"phone\": \"0912345678\"\n}"
+            },
+            "description": "Register new customer account. After registering, copy the token from response to variable"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"123456\"\n}"
+            },
+            "description": "Login customer. Copy token from response to variable. Simple passwords: admin123, manager123, staff123"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer (Auth Required)",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "profile"]
+            },
+            "description": "Get current user profile. Requires authentication"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "profile"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Nguyen Van B\",\n    \"phone\": \"0987654321\",\n    \"birth_date\": \"2000-01-01\",\n    \"gender\": \"nam\"\n}"
+            },
+            "description": "Update user profile"
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"items\": [\n        {\n            \"product_id\": 1,\n            \"variant_id\": null,\n            \"product_name\": \"Ao Thun Nam Cao Cap\",\n            \"product_sku\": \"SKU001\",\n            \"product_image\": \"\",\n            \"size_name\": \"M\",\n            \"color_name\": \"Den\",\n            \"variant_name\": \"M - Den\",\n            \"unit_price\": 299000,\n            \"quantity\": 2\n        }\n    ],\n    \"shipping_address\": \"123 Nguyen Trai\",\n    \"ward\": \"Phuong 1\",\n    \"district\": \"Quan 1\",\n    \"city\": \"Ho Chi Minh\",\n    \"recipient_name\": \"Tran Van B\",\n    \"recipient_phone\": \"0912345678\",\n    \"payment_method\": \"cod\",\n    \"payment_status\": \"unpaid\",\n    \"shipping_fee\": 30000,\n    \"discount_amount\": 0,\n    \"note\": \"Giao gio hanh chinh\"\n}"
+            },
+            "description": "Create new order"
+          }
+        },
+        {
+          "name": "Get Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/orders?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ]
+            },
+            "description": "Get user orders list"
+          }
+        },
+        {
+          "name": "Get Order Detail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "{{order_id}}"]
+            },
+            "description": "Get order detail by order ID"
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/1/cancel?reason=Khong can nua",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "{{order_id}}", "cancel"],
+              "query": [
+                {"key": "reason", "value": "Khong can nua"}
+              ]
+            },
+            "description": "Cancel order (only pending/confirmed orders)"
+          }
+        },
+        {
+          "name": "Get Wishlist",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist"]
+            },
+            "description": "Get user wishlist"
+          }
+        },
+        {
+          "name": "Add to Wishlist",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"productId\": 1\n}"
+            },
+            "description": "Add product to wishlist"
+          }
+        },
+        {
+          "name": "Remove from Wishlist",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist", "{{product_id}}"]
+            },
+            "description": "Remove product from wishlist"
+          }
+        },
+        {
+          "name": "Get Addresses",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses"]
+            },
+            "description": "Get user addresses"
+          }
+        },
+        {
+          "name": "Create Address",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"full_name\": \"Tran Van B\",\n    \"phone\": \"0912345678\",\n    \"address\": \"123 Nguyen Trai\",\n    \"ward\": \"Phuong 1\",\n    \"district\": \"Quan 1\",\n    \"city\": \"Ho Chi Minh\",\n    \"is_default\": true\n}"
+            },
+            "description": "Create new address"
+          }
+        },
+        {
+          "name": "Update Address",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses", "{{address_id}}"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"full_name\": \"Tran Van C\",\n    \"phone\": \"0987654321\",\n    \"address\": \"456 Le Loi\",\n    \"is_default\": true\n}"
+            },
+            "description": "Update address by ID"
+          }
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses", "{{address_id}}"]
+            },
+            "description": "Delete address by ID"
+          }
+        },
+        {
+          "name": "Create Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reviews"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_id\": 1,\n    \"rating\": 5,\n    \"content\": \"San pham rat tot, chat luong cao, giao hang nhanh chong!\"\n}"
+            },
+            "description": "Create product review (requires purchase)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin (Auth Required)",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "login"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/x-www-form-urlencoded"}
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "email", "value": "admin@example.com", "type": "text"},
+                {"key": "password", "value": "admin123", "type": "text"}
+              ]
+            },
+            "description": "Admin login. Use Form data. Simple test passwords: admin123, manager123, staff123"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "logout"]
+            },
+            "description": "Admin logout"
+          }
+        },
+        {
+          "name": "Dashboard",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "dashboard"]
+            },
+            "description": "Get dashboard statistics"
+          }
+        },
+        {
+          "name": "Notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "notifications"]
+            },
+            "description": "Get admin notifications"
+          }
+        },
+        {
+          "name": "Upload Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "upload"]
+            },
+            "description": "Upload image file. Use form-data with key 'image'"
+          }
+        },
+        {
+          "name": "Products - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/products?page=1&limit=10&search=ao",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "products"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": "ao"},
+                {"key": "category", "value": "1"},
+                {"key": "brand", "value": "1"}
+              ]
+            },
+            "description": "Get products list (admin)"
+          }
+        },
+        {
+          "name": "Products - Get All (no pagination)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/products?all=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "products"],
+              "query": [
+                {"key": "all", "value": "1"}
+              ]
+            },
+            "description": "Get all products without pagination"
+          }
+        },
+        {
+          "name": "Products - Get By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "products", "{{product_id}}"]
+            },
+            "description": "Get product by ID"
+          }
+        },
+        {
+          "name": "Products - Sizes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/sizes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "sizes"]
+            },
+            "description": "Get all sizes"
+          }
+        },
+        {
+          "name": "Products - Colors",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/colors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "colors"]
+            },
+            "description": "Get all colors"
+          }
+        },
+        {
+          "name": "Categories - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "categories"]
+            },
+            "description": "Get all categories"
+          }
+        },
+        {
+          "name": "Brands - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/brands",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "brands"]
+            },
+            "description": "Get all brands"
+          }
+        },
+        {
+          "name": "Orders - Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders", "stats"]
+            },
+            "description": "Get order statistics"
+          }
+        },
+        {
+          "name": "Orders - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders?page=1&status=pending&search=ORD",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "status", "value": "pending"},
+                {"key": "search", "value": "ORD"},
+                {"key": "date_from", "value": "2026-01-01"},
+                {"key": "date_to", "value": "2026-12-31"},
+                {"key": "payment_status", "value": "unpaid"}
+              ]
+            },
+            "description": "Get orders list with filters. Status: pending, confirmed, processing, shipped, delivered, cancelled, returned"
+          }
+        },
+        {
+          "name": "Orders - Detail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders", "{{order_id}}"]
+            },
+            "description": "Get order detail by ID"
+          }
+        },
+        {
+          "name": "Orders - Update Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders", "{{order_id}}", "status"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/x-www-form-urlencoded"}
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "status", "value": "confirmed", "type": "text"},
+                {"key": "note", "value": "Da xac nhan don hang", "type": "text"}
+              ]
+            },
+            "description": "Update order status. Status transitions: pending->confirmed/processing/cancelled, confirmed->processing/cancelled, processing->shipped/cancelled, shipped->delivered/returned, delivered->returned"
+          }
+        },
+        {
+          "name": "Orders - Update Payment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders/1/payment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders", "{{order_id}}", "payment"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/x-www-form-urlencoded"}
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "payment_status", "value": "paid", "type": "text"}
+              ]
+            },
+            "description": "Update payment status. Values: unpaid, paid, partially_paid, refunded"
+          }
+        },
+        {
+          "name": "Orders - Cancel",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders/1/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders", "{{order_id}}", "cancel"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/x-www-form-urlencoded"}
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "reason", "value": "Huy boi admin", "type": "text"}
+              ]
+            },
+            "description": "Cancel order (admin)"
+          }
+        },
+        {
+          "name": "Customers - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/customers?page=1&search=nguyen",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "customers"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "search", "value": "nguyen"}
+              ]
+            },
+            "description": "Get customers list"
+          }
+        },
+        {
+          "name": "Customers - Detail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/customers/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "customers", "{{customer_id}}"]
+            },
+            "description": "Get customer detail by ID"
+          }
+        },
+        {
+          "name": "Employees - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/employees?page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "employees"],
+              "query": [
+                {"key": "page", "value": "1"}
+              ]
+            },
+            "description": "Get employees list"
+          }
+        },
+        {
+          "name": "Warehouse",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/warehouse",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "warehouse"]
+            },
+            "description": "Get warehouse data. Query param: ?filter=low (low stock) or ?filter=out (out of stock)"
+          }
+        },
+        {
+          "name": "Suppliers - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/suppliers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "suppliers"]
+            },
+            "description": "Get suppliers list"
+          }
+        },
+        {
+          "name": "Warehouses - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/warehouses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "warehouses"]
+            },
+            "description": "Get warehouses list"
+          }
+        },
+        {
+          "name": "Supplier Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/supplier-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "supplier-orders"]
+            },
+            "description": "Get supplier orders list"
+          }
+        },
+        {
+          "name": "Promotions - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/promotions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "promotions"]
+            },
+            "description": "Get promotions list"
+          }
+        },
+        {
+          "name": "Coupons - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/coupons",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "coupons"]
+            },
+            "description": "Get coupons list"
+          }
+        },
+        {
+          "name": "Reviews - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reviews?filter=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "reviews"],
+              "query": [
+                {"key": "filter", "value": "pending"}
+              ]
+            },
+            "description": "Get reviews list. Filter: pending, approved, or empty for all"
+          }
+        },
+        {
+          "name": "Reviews - Approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reviews/1/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "reviews", "{{review_id}}", "approve"]
+            },
+            "description": "Approve a review"
+          }
+        },
+        {
+          "name": "Reviews - Reply",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reviews/1/reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "reviews", "{{review_id}}", "reply"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/x-www-form-urlencoded"}
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "reply", "value": "Cam on ban da binh luan!", "type": "text"}
+              ]
+            },
+            "description": "Reply to a review"
+          }
+        },
+        {
+          "name": "News - List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/news",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "news"]
+            },
+            "description": "Get news list (admin)"
+          }
+        },
+        {
+          "name": "Contacts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "contacts"]
+            },
+            "description": "Get contacts list. Query param: ?filter=new/read/replied or ?filter=all"
+          }
+        },
+        {
+          "name": "Reports",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reports?period=30days",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "reports"],
+              "query": [
+                {"key": "period", "value": "30days", "description": "7days, 30days, 90days, 365days, all"}
+              ]
+            },
+            "description": "Get reports data by period"
+          }
+        },
+        {
+          "name": "Settings - Get",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "settings"]
+            },
+            "description": "Get all settings"
+          }
+        }
+      ]
+    }
+  ]
+}

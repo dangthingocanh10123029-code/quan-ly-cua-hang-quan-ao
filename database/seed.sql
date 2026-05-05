@@ -2,7 +2,11 @@
 -- CLOTHING STORE - Seed Data
 -- Complete Store Management System
 -- =====================================================
+CREATE DATABASE IF NOT EXISTS clothing_store
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE clothing_store;
+SET NAMES utf8mb4;
+SET time_zone = '+07:00';
 
 -- =====================================================
 -- Clean existing data (safe for re-run)
@@ -14,7 +18,7 @@ TRUNCATE TABLE coupon_usage;
 TRUNCATE TABLE order_items;
 TRUNCATE TABLE orders;
 TRUNCATE TABLE cart_items;
-TRUNCATE TABLE wishlist;
+TRUNCATE TABLE wishlists;
 TRUNCATE TABLE reward_points;
 TRUNCATE TABLE return_requests;
 TRUNCATE TABLE product_reviews;
@@ -42,6 +46,7 @@ TRUNCATE TABLE colors;
 TRUNCATE TABLE sizes;
 TRUNCATE TABLE categories;
 TRUNCATE TABLE settings;
+TRUNCATE TABLE addresses;
 TRUNCATE TABLE users;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -68,15 +73,15 @@ INSERT INTO suppliers (name, code, email, phone, address, tax_code, contact_pers
 -- Password: admin123 -> $2a$10$NpvovbVVIc1Y/mipPgtcSO0fhnBPlpuAcOfFrk4/EmxZAezviNGnK
 -- Password: user123  -> $2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK
 -- =====================================================
-INSERT INTO users (name, email, password, phone, address, role, gender, birth_date, default_city, default_district, default_address, reward_points, total_spent, is_active) VALUES
-('Admin Shop', 'admin@clothing-store.vn', '$2a$10$NpvovbVVIc1Y/mipPgtcSO0fhnBPlpuAcOfFrk4/EmxZAezviNGnK', '0909123456', '456 Nguyễn Trãi, Quận 5, TP.HCM', 'admin', 'male', '1990-05-15', 'TP.HCM', 'Quận 5', '456 Nguyễn Trãi', 0, 0, 1),
-('Nguyễn Thị Lan', 'lan.nguyen@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0901234567', '78 Cái Khế, Quận Ninh Kiều, Cần Thơ', 'user', 'female', '1995-03-20', 'Cần Thơ', 'Quận Ninh Kiều', '78 Cái Khế', 1500, 5500000, 1),
-('Trần Văn Minh', 'minh.tran@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0912345678', '23 Đường 3 Tháng 2, Quận 10, TP.HCM', 'user', 'male', '1992-08-12', 'TP.HCM', 'Quận 10', '23 Đường 3 Tháng 2', 2800, 8900000, 1),
-('Lê Hoài Trang', 'trang.le@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0934567890', '56 Lý Tự Trọng, Quận 1, TP.HCM', 'user', 'female', '1998-12-05', 'TP.HCM', 'Quận 1', '56 Lý Tự Trọng', 500, 1800000, 1),
-('Phạm Đức Anh', 'anh.pham@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0945678901', '89 Pasteur, Quận 3, TP.HCM', 'user', 'male', '1993-06-25', 'TP.HCM', 'Quận 3', '89 Pasteur', 1200, 4200000, 1),
-('Võ Thị Mai Hương', 'huong.vo@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0956789012', '123 Nguyễn Huệ, Quận 1, TP.HCM', 'user', 'female', '1997-01-10', 'TP.HCM', 'Quận 1', '123 Nguyễn Huệ', 800, 3200000, 1),
-('Hoàng Đức Mạnh', 'manh.hoang@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0967890123', '456 Trần Hưng Đạo, Quận 5, TP.HCM', 'user', 'male', '1991-09-18', 'TP.HCM', 'Quận 5', '456 Trần Hưng Đạo', 2200, 7500000, 1),
-('Trương Thị Hạnh', 'hanh.truong@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0978901234', '789 Lê Lai, Quận 3, TP.HCM', 'user', 'female', '1996-04-22', 'TP.HCM', 'Quận 3', '789 Lê Lai', 600, 2100000, 1);
+INSERT INTO users (name, email, password, phone, address, role, gender, birth_date, member_level, default_city, default_district, default_address, reward_points, total_spent, is_active) VALUES
+('Admin Shop', 'admin@clothing-store.vn', '$2a$10$NpvovbVVIc1Y/mipPgtcSO0fhnBPlpuAcOfFrk4/EmxZAezviNGnK', '0909123456', '456 Nguyễn Trãi, Quận 5, TP.HCM', 'admin', 'male', '1990-05-15', 'Gold', 'TP.HCM', 'Quận 5', '456 Nguyễn Trãi', 0, 0, 1),
+('Nguyễn Thị Lan', 'lan.nguyen@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0901234567', '78 Cái Khế, Quận Ninh Kiều, Cần Thơ', 'user', 'female', '1995-03-20', 'Silver', 'Cần Thơ', 'Quận Ninh Kiều', '78 Cái Khế', 1500, 5500000, 1),
+('Trần Văn Minh', 'minh.tran@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0912345678', '23 Đường 3 Tháng 2, Quận 10, TP.HCM', 'user', 'male', '1992-08-12', 'Gold', 'TP.HCM', 'Quận 10', '23 Đường 3 Tháng 2', 2800, 8900000, 1),
+('Lê Hoài Trang', 'trang.le@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0934567890', '56 Lý Tự Trọng, Quận 1, TP.HCM', 'user', 'female', '1998-12-05', 'Bronze', 'TP.HCM', 'Quận 1', '56 Lý Tự Trọng', 500, 1800000, 1),
+('Phạm Đức Anh', 'anh.pham@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0945678901', '89 Pasteur, Quận 3, TP.HCM', 'user', 'male', '1993-06-25', 'Silver', 'TP.HCM', 'Quận 3', '89 Pasteur', 1200, 4200000, 1),
+('Võ Thị Mai Hương', 'huong.vo@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0956789012', '123 Nguyễn Huệ, Quận 1, TP.HCM', 'user', 'female', '1997-01-10', 'Bronze', 'TP.HCM', 'Quận 1', '123 Nguyễn Huệ', 800, 3200000, 1),
+('Hoàng Đức Mạnh', 'manh.hoang@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0967890123', '456 Trần Hưng Đạo, Quận 5, TP.HCM', 'user', 'male', '1991-09-18', 'Silver', 'TP.HCM', 'Quận 5', '456 Trần Hưng Đạo', 2200, 7500000, 1),
+('Trương Thị Hạnh', 'hanh.truong@email.com', '$2a$10$pPpNq5GJvSI/gGjei5yJX.yyHCTVYeNqGnN.MUJ6fMh3GGUar6rIK', '0978901234', '789 Lê Lai, Quận 3, TP.HCM', 'user', 'female', '1996-04-22', 'Bronze', 'TP.HCM', 'Quận 3', '789 Lê Lai', 600, 2100000, 1);
 
 -- =====================================================
 -- Seed: Employees
@@ -87,6 +92,18 @@ INSERT INTO employees (user_id, employee_code, first_name, last_name, full_name,
 (NULL, 'EMP-003', 'Hùng', 'Trần', 'Trần Hùng', 'hung.tran@clothing-store.vn', '0922222222', '079195001236', '1994-07-20', 'male', '456 Đồng Khởi, Q1, TP.HCM', 'Nhân viên kho', 'Kho vận', '2021-06-15', 7500000, 2.00, 1),
 (NULL, 'EMP-004', 'Hà', 'Ngô', 'Ngô Thị Hà', 'ha.ngo@clothing-store.vn', '0933333333', '079195001237', '1995-11-05', 'female', '789 Pasteur, Q3, TP.HCM', 'Nhân viên chăm sóc khách hàng', 'Chăm sóc khách hàng', '2022-01-10', 7000000, 2.50, 1),
 (NULL, 'EMP-005', 'Dũng', 'Lý', 'Lý Văn Dũng', 'dung.ly@clothing-store.vn', '0944444444', '079195001238', '1993-09-15', 'male', '321 Võ Văn Tần, Q3, TP.HCM', 'Kế toán', 'Tài chính', '2021-09-01', 9000000, 0.00, 1);
+
+-- =====================================================
+-- Seed: Addresses
+-- =====================================================
+INSERT INTO addresses (user_id, full_name, phone, address, ward, district, city, is_default) VALUES
+(2, 'Nguyễn Thị Lan', '0901234567', '78 Cái Khế', 'Cái Khế', 'Quận Ninh Kiều', 'Cần Thơ', 1),
+(3, 'Trần Văn Minh', '0912345678', '23 Đường 3 Tháng 2', 'Phường 10', 'Quận 10', 'TP.HCM', 1),
+(4, 'Lê Hoài Trang', '0934567890', '56 Lý Tự Trọng', 'Phường Bến Nghé', 'Quận 1', 'TP.HCM', 1),
+(5, 'Phạm Đức Anh', '0945678901', '89 Pasteur', 'Phường 6', 'Quận 3', 'TP.HCM', 1),
+(6, 'Võ Thị Mai Hương', '0956789012', '123 Nguyễn Huệ', 'Phường Bến Nghé', 'Quận 1', 'TP.HCM', 1),
+(7, 'Hoàng Đức Mạnh', '0967890123', '456 Trần Hưng Đạo', 'Phường 11', 'Quận 5', 'TP.HCM', 1),
+(8, 'Trương Thị Hạnh', '0978901234', '789 Lê Lai', 'Phường 6', 'Quận 3', 'TP.HCM', 1);
 
 -- =====================================================
 -- Seed: Categories
@@ -203,105 +220,107 @@ INSERT INTO colors (name, code, hex_code, sort_order, is_active) VALUES
 
 -- =====================================================
 -- Seed: Products
+-- NOTE: Product images are stored in product_images table, NOT in products.image_url
 -- =====================================================
-INSERT INTO products (name, slug, short_description, description, price, compare_price, cost_price, sku, barcode, stock, category_id, brand_id, gender, age_group, material, pattern, season, is_featured, is_active) VALUES
+INSERT INTO products (name, slug, short_description, description, price, compare_price, cost_price, sku, barcode, stock, low_stock_threshold, category_id, brand_id, gender, age_group, material, pattern, season, total_sold, is_featured, is_active) VALUES
 
 -- Áo Thun Nam
-('Áo Thun Nam Basic Cotton 100%', 'ao-thun-nam-basic-cotton', 'Áo thun nam cotton 100%, form regular thoáng mát', 'Áo thun nam chất liệu cotton 100% cao cấp, mềm mại và thoáng mát. Form regular phù hợp với nhiều dáng người. Thiết kế đơn giản dễ phối hợp với mọi trang phục. Đường may tỉ mỉ, bền đẹp theo thời gian.', 299000, 350000, 150000, 'ATN-BASIC-001', '8934567890001', 150, 1, 4, 'male', 'adult', '100% Cotton', 'Trơn', 'Four Seasons', 1, 1),
-('Áo Thun Nam Oversize Graphic', 'ao-thun-nam-oversize-graphic', 'Áo thun oversize nam in họa tiết trendy 2026', 'Áo thun nam phong cách oversize, rộng rãi và thoải mái. Họa tiết in hình trendy, hiện đại theo xu hướng 2026. Chất liệu cotton blended mềm mại, không phai màu. Form baggy phù hợp với giới trẻ năng động.', 449000, 520000, 220000, 'ATN-OVER-001', '8934567890002', 90, 1, 1, 'male', 'adult', 'Cotton Blend', 'Họa tiết', 'Four Seasons', 1, 1),
-('Áo Thun Nam Minimalist', 'ao-thun-nam-minimalist', 'Áo thun nam tối giản minimalist, dễ phối', 'Áo thun nam thiết kế tối giản theo phong cách minimalist. Không họa tiết, không logo, chỉ màu cơ bản. Chất cotton 280gsm dày dặn, form vừa vặn. Lý tưởng cho những ai yêu thích sự đơn giản.', 399000, NULL, 190000, 'ATN-MINI-001', '8934567890003', 80, 1, 4, 'male', 'adult', '100% Cotton 280gsm', 'Trơn', 'Four Seasons', 0, 1),
+('Áo Thun Nam Basic Cotton 100%', 'ao-thun-nam-basic-cotton', 'Áo thun nam cotton 100%, form regular thoáng mát', 'Áo thun nam chất liệu cotton 100% cao cấp, mềm mại và thoáng mát. Form regular phù hợp với nhiều dáng người. Thiết kế đơn giản dễ phối hợp với mọi trang phục. Đường may tỉ mỉ, bền đẹp theo thời gian.', 299000, 350000, 150000, 'ATN-BASIC-001', '8934567890001', 150, 5, 1, 4, 'male', 'adult', '100% Cotton', 'Trơn', 'Four Seasons', 320, 1, 1),
+('Áo Thun Nam Oversize Graphic', 'ao-thun-nam-oversize-graphic', 'Áo thun oversize nam in họa tiết trendy 2026', 'Áo thun nam phong cách oversize, rộng rãi và thoải mái. Họa tiết in hình trendy, hiện đại theo xu hướng 2026. Chất liệu cotton blended mềm mại, không phai màu. Form baggy phù hợp với giới trẻ năng động.', 449000, 520000, 220000, 'ATN-OVER-001', '8934567890002', 90, 5, 1, 1, 'male', 'adult', 'Cotton Blend', 'Họa tiết', 'Four Seasons', 280, 1, 1),
+('Áo Thun Nam Minimalist', 'ao-thun-nam-minimalist', 'Áo thun nam tối giản minimalist, dễ phối', 'Áo thun nam thiết kế tối giản theo phong cách minimalist. Không họa tiết, không logo, chỉ màu cơ bản. Chất cotton 280gsm dày dặn, form vừa vặn. Lý tưởng cho những ai yêu thích sự đơn giản.', 399000, NULL, 190000, 'ATN-MINI-001', '8934567890003', 80, 5, 1, 4, 'male', 'adult', '100% Cotton 280gsm', 'Trơn', 'Four Seasons', 150, 0, 1),
 
 -- Áo Sơ Mi Nam
-('Áo Sơ Mi Nam Oxford Cổ Trụ', 'ao-so-mi-nam-oxford-co-tru', 'Áo sơ mi oxford cổ trụ lịch lãm', 'Áo sơ mi nam chất liệu vải oxford cao cấp, mềm mại và thoáng khí. Cổ trụ (spread collar) lịch sự, form slim fit ôm vừa vặn. Phù hợp mặc đi làm, đi chơi hoặc các dịp quan trọng.', 559000, 680000, 280000, 'ASM-OXFORD-001', '8934567890010', 70, 2, 2, 'male', 'adult', 'Vải Oxford', 'Trơn', 'Four Seasons', 1, 1),
-('Áo Sơ Mi Nam Hàn Quốc', 'ao-so-mi-nam-han-quoc', 'Áo sơ mi nam phong cách Hàn Quốc oversize', 'Áo sơ mi nam phong cách Hàn Quốc (K-fashion), form oversize thoải mái. Chất liệu vải mềm mại, thoáng khí. Có thể mặc đơn giản hoặc phối layers. Phù hợp cho mùa xuân, hè.', 429000, 500000, 210000, 'ASM-KOREAN-001', '8934567890011', 95, 2, 3, 'male', 'adult', 'Vải TC', 'Trơn', 'Spring', 0, 1),
+('Áo Sơ Mi Nam Oxford Cổ Trụ', 'ao-so-mi-nam-oxford-co-tru', 'Áo sơ mi oxford cổ trụ lịch lãm', 'Áo sơ mi nam chất liệu vải oxford cao cấp, mềm mại và thoáng khí. Cổ trụ (spread collar) lịch sự, form slim fit ôm vừa vặn. Phù hợp mặc đi làm, đi chơi hoặc các dịp quan trọng.', 559000, 680000, 280000, 'ASM-OXFORD-001', '8934567890010', 70, 5, 2, 2, 'male', 'adult', 'Vải Oxford', 'Trơn', 'Four Seasons', 195, 1, 1),
+('Áo Sơ Mi Nam Hàn Quốc', 'ao-so-mi-nam-han-quoc', 'Áo sơ mi nam phong cách Hàn Quốc oversize', 'Áo sơ mi nam phong cách Hàn Quốc (K-fashion), form oversize thoải mái. Chất liệu vải mềm mại, thoáng khí. Có thể mặc đơn giản hoặc phối layers. Phù hợp cho mùa xuân, hè.', 429000, 500000, 210000, 'ASM-KOREAN-001', '8934567890011', 95, 5, 2, 3, 'male', 'adult', 'Vải TC', 'Trơn', 'Spring', 120, 0, 1),
 
 -- Áo Polo Nam
-('Áo Polo Nam Premium Pique', 'ao-polo-nam-premium-pique', 'Áo polo nam pique cotton cao cấp', 'Áo polo nam chất liệu pique cotton cao cấp, mang lại cảm giác thoáng mát suốt ngày dài. Thiết kế cổ polo trẻ trung và năng động. Đường may laser hiện đại, form regular vừa vặn.', 499000, NULL, 250000, 'APO-PREMIUM-001', '8934567890020', 100, 3, 5, 'male', 'adult', 'Pique Cotton', 'Trơn', 'Summer', 0, 1),
+('Áo Polo Nam Premium Pique', 'ao-polo-nam-premium-pique', 'Áo polo nam pique cotton cao cấp', 'Áo polo nam chất liệu pique cotton cao cấp, mang lại cảm giác thoáng mát suốt ngày dài. Thiết kế cổ polo trẻ trung và năng động. Đường may laser hiện đại, form regular vừa vặn.', 499000, NULL, 250000, 'APO-PREMIUM-001', '8934567890020', 100, 5, 3, 5, 'male', 'adult', 'Pique Cotton', 'Trơn', 'Summer', 180, 0, 1),
 
 -- Quần Jeans Nam
-('Quần Jeans Nam Slim Fit Wash Nhẹ', 'quan-jeans-nam-slim-fit', 'Quần jeans nam slim fit wash vintage nhẹ', 'Quần jeans nam slim fit chất liệu denim co giãn thoải mái. Wash nhẹ vintage look đẹp mắt. 5 túi tiện dụng. Phù hợp mặc hàng ngày, đi chơi hay đi làm đều phong cách.', 699000, 850000, 350000, 'QJN-SLIM-001', '8934567890030', 110, 4, 6, 'male', 'adult', 'Denim Co Giãn', 'Trơn', 'Four Seasons', 1, 1),
-('Quần Jeans Nam Wide Leg', 'quan-jeans-nam-wide-leg', 'Quần jeans nam wide leg retro trend', 'Quần jeans nam wide leg phong cách retro trending. Chất liệu denim mềm mại, không cứng. Thiết kế dáng xuông wide leg rộng rãi, thoải mái. High waist giúp tôn eo.', 749000, 900000, 380000, 'QJN-WIDE-001', '8934567890031', 85, 4, 1, 'male', 'adult', 'Denim', 'Trơn', 'Four Seasons', 1, 1),
+('Quần Jeans Nam Slim Fit Wash Nhẹ', 'quan-jeans-nam-slim-fit', 'Quần jeans nam slim fit wash vintage nhẹ', 'Quần jeans nam slim fit chất liệu denim co giãn thoải mái. Wash nhẹ vintage look đẹp mắt. 5 túi tiện dụng. Phù hợp mặc hàng ngày, đi chơi hay đi làm đều phong cách.', 699000, 850000, 350000, 'QJN-SLIM-001', '8934567890030', 110, 5, 4, 6, 'male', 'adult', 'Denim Co Giãn', 'Trơn', 'Four Seasons', 410, 1, 1),
+('Quần Jeans Nam Wide Leg', 'quan-jeans-nam-wide-leg', 'Quần jeans nam wide leg retro trend', 'Quần jeans nam wide leg phong cách retro trending. Chất liệu denim mềm mại, không cứng. Thiết kế dáng xuông wide leg rộng rãi, thoải mái. High waist giúp tôn eo.', 749000, 900000, 380000, 'QJN-WIDE-001', '8934567890031', 85, 5, 4, 1, 'male', 'adult', 'Denim', 'Trơn', 'Four Seasons', 290, 1, 1),
 
 -- Quần Tây Nam
-('Quần Tây Nam Slim Fit', 'quan-tay-nam-slim-fit', 'Quần âu nam slim fit công sở', 'Quần tây nam form slim lịch lãm và chuyên nghiệp. Chất liệu vải wool blend mềm mại, thoáng khí, không nhăn. Thiết kế 2 nếp gấp trước sang trọng. Phù hợp đi làm công sở.', 899000, 1100000, 450000, 'QTN-SLIM-001', '8934567890040', 65, 5, 2, 'male', 'adult', 'Wool Blend', 'Trơn', 'Four Seasons', 0, 1),
+('Quần Tây Nam Slim Fit', 'quan-tay-nam-slim-fit', 'Quần âu nam slim fit công sở', 'Quần tây nam form slim lịch lãm và chuyên nghiệp. Chất liệu vải wool blend mềm mại, thoáng khí, không nhăn. Thiết kế 2 nếp gấp trước sang trọng. Phù hợp đi làm công sở.', 899000, 1100000, 450000, 'QTN-SLIM-001', '8934567890040', 65, 5, 5, 2, 'male', 'adult', 'Wool Blend', 'Trơn', 'Four Seasons', 160, 0, 1),
 
 -- Quần Short Nam
-('Quần Short Nam Chino Beige', 'quan-short-nam-chino-beige', 'Quần short nam chino màu beige trendy', 'Quần short nam chino màu beige trendy, phong cách. Chất liệu cotton chino cao cấp, bền đẹp. Thiết kế 2 túi bên hông. Dáng quần vừa vặn, độ dài trên gối. Phù hợp mùa hè.', 449000, NULL, 220000, 'QSN-CHINO-001', '8934567890050', 95, 6, 5, 'male', 'adult', 'Cotton Chino', 'Trơn', 'Summer', 1, 1),
+('Quần Short Nam Chino Beige', 'quan-short-nam-chino-beige', 'Quần short nam chino màu beige trendy', 'Quần short nam chino màu beige trendy, phong cách. Chất liệu cotton chino cao cấp, bền đẹp. Thiết kế 2 túi bên hông. Dáng quần vừa vặn, độ dài trên gối. Phù hợp mùa hè.', 449000, NULL, 220000, 'QSN-CHINO-001', '8934567890050', 95, 5, 6, 5, 'male', 'adult', 'Cotton Chino', 'Trơn', 'Summer', 230, 1, 1),
 
 -- Áo Blouse Nữ
-('Áo Blouse Nữ Lụa Cao Cấp', 'ao-blouse-nu-lua-cao-cap', 'Áo blouse nữ lụa mềm mại, sang trọng', 'Áo blouse nữ chất liệu lụa cao cấp, mềm mại và thoáng khí. Thiết kế cổ V thanh lịch, tay dài bo nhẹ. Phù hợp đi làm công sở hoặc đi chơi đều sang trọng.', 599000, 720000, 300000, 'ABN-LUA-001', '8934567890060', 75, 7, 2, 'female', 'adult', 'Lụa', 'Trơn', 'Four Seasons', 1, 1),
-('Áo Blouse Nữ Voan Trắng', 'ao-blouse-nu-voan-trang', 'Áo blouse nữ voan trắng thanh lịch', 'Áo blouse nữ chất liệu voan mỏng nhẹ, thoáng mát. Màu trắng thanh lịch, dễ phối với mọi trang phục. Phù hợp công sở hoặc dạo phố. Đường may tỉ mỉ, không nhăn.', 449000, 550000, 220000, 'ABN-VOAN-001', '8934567890061', 90, 7, 3, 'female', 'adult', 'Voan', 'Trơn', 'Summer', 0, 1),
+('Áo Blouse Nữ Lụa Cao Cấp', 'ao-blouse-nu-lua-cao-cap', 'Áo blouse nữ lụa mềm mại, sang trọng', 'Áo blouse nữ chất liệu lụa cao cấp, mềm mại và thoáng khí. Thiết kế cổ V thanh lịch, tay dài bo nhẹ. Phù hợp đi làm công sở hoặc đi chơi đều sang trọng.', 599000, 720000, 300000, 'ABN-LUA-001', '8934567890060', 75, 5, 7, 2, 'female', 'adult', 'Lụa', 'Trơn', 'Four Seasons', 350, 1, 1),
+('Áo Blouse Nữ Voan Trắng', 'ao-blouse-nu-voan-trang', 'Áo blouse nữ voan trắng thanh lịch', 'Áo blouse nữ chất liệu voan mỏng nhẹ, thoáng mát. Màu trắng thanh lịch, dễ phối với mọi trang phục. Phù hợp công sở hoặc dạo phố. Đường may tỉ mỉ, không nhăn.', 449000, 550000, 220000, 'ABN-VOAN-001', '8934567890061', 90, 5, 7, 3, 'female', 'adult', 'Voan', 'Trơn', 'Summer', 210, 0, 1),
 
 -- Áo Thun Nữ
-('Áo Thun Nữ Basic Trơn', 'ao-thun-nu-basic-tron', 'Áo thun nữ basic cổ tròn trơn', 'Áo thun nữ basic cổ tròn thiết kế đơn giản, dễ phối. Chất cotton 95% co giãn tốt, thoáng mát. Form regular vừa vặn, phù hợp nhiều dáng người. Nhiều màu sắc lựa chọn.', 199000, 250000, 100000, 'ATN-BASIC-002', '8934567890070', 180, 8, 4, 'female', 'adult', 'Cotton 95%', 'Trơn', 'Four Seasons', 1, 1),
-('Áo Thun Nữ Tay Lửng Oversize', 'ao-thun-nu-tay-luu-oversize', 'Áo thun nữ tay lửng oversize streetwear', 'Áo thun nữ tay lửng phong cách streetwear, trẻ trung và cá tính. Form oversize rộng rãi, thoải mái. Chất cotton blend mềm mại. Kết hợp với chân váy ngắn, quần jeans đều đẹp.', 279000, NULL, 140000, 'ATN-OVER-002', '8934567890071', 120, 8, 1, 'female', 'adult', 'Cotton Blend', 'Trơn', 'Four Seasons', 0, 1),
+('Áo Thun Nữ Basic Trơn', 'ao-thun-nu-basic-tron', 'Áo thun nữ basic cổ tròn trơn', 'Áo thun nữ basic cổ tròn thiết kế đơn giản, dễ phối. Chất cotton 95% co giãn tốt, thoáng mát. Form regular vừa vặn, phù hợp nhiều dáng người. Nhiều màu sắc lựa chọn.', 199000, 250000, 100000, 'ATN-BASIC-002', '8934567890070', 180, 5, 8, 4, 'female', 'adult', 'Cotton 95%', 'Trơn', 'Four Seasons', 520, 1, 1),
+('Áo Thun Nữ Tay Lửng Oversize', 'ao-thun-nu-tay-luu-oversize', 'Áo thun nữ tay lửng oversize streetwear', 'Áo thun nữ tay lửng phong cách streetwear, trẻ trung và cá tính. Form oversize rộng rãi, thoải mái. Chất cotton blend mềm mại. Kết hợp với chân váy ngắn, quần jeans đều đẹp.', 279000, NULL, 140000, 'ATN-OVER-002', '8934567890071', 120, 5, 8, 1, 'female', 'adult', 'Cotton Blend', 'Trơn', 'Four Seasons', 380, 0, 1),
 
 -- Áo Croptop
-('Áo Croptop Nữ Thun Co Giãn', 'ao-croptop-nu-thun', 'Áo croptop nữ thun co giãn 4 chiều', 'Áo croptop nữ chất thun cotton co giãn 4 chiều, thoáng mát. Thiết kế croptop vừa vặn, tôn dáng. Phong cách trẻ trung, năng động. Kết hợp hoàn hảo với quần jeans cao, chân váy.', 199000, NULL, 95000, 'ACT-CROP-001', '8934567890080', 200, 9, 1, 'female', 'adult', 'Thun Cotton', 'Trơn', 'Summer', 1, 1),
+('Áo Croptop Nữ Thun Co Giãn', 'ao-croptop-nu-thun', 'Áo croptop nữ thun co giãn 4 chiều', 'Áo croptop nữ chất thun cotton co giãn 4 chiều, thoáng mát. Thiết kế croptop vừa vặn, tôn dáng. Phong cách trẻ trung, năng động. Kết hợp hoàn hảo với quần jeans cao, chân váy.', 199000, NULL, 95000, 'ACT-CROP-001', '8934567890080', 200, 5, 9, 1, 'female', 'adult', 'Thun Cotton', 'Trơn', 'Summer', 460, 1, 1),
 
 -- Chân Váy
-('Chân Váy Midi Xếp Ly', 'chan-vay-midi-xep-ly', 'Chân váy midi xếp ly thanh lịch', 'Chân váy midi xếp ly thiết kế thanh lịch và sang trọng. Chất liệu voan nhún nhẹ nhàng, bay bổng. Dáng váy xếp ly đều đẹp, che khuyết điểm chân. Phù hợp đi làm, đi chơi hay dự tiệc.', 399000, 480000, 200000, 'CVM-XEP-001', '8934567890090', 80, 10, 2, 'female', 'adult', 'Voan Nhún', 'Trơn', 'Four Seasons', 1, 1),
-('Chân Váy Tennis Caro', 'chan-vay-tennis-caro', 'Chân váy tennis caro xinh xắn', 'Chân váy tennis chất liệu vải bông thoáng mát. Họa tiết caro trendy. Dáng ngắn trên gối, năng động. Phù hợp mặc đi chơi, dạo phố, picnic.', 299000, NULL, 150000, 'CVM-CARO-001', '8934567890091', 100, 10, 4, 'female', 'adult', 'Cotton Caro', 'Caro', 'Summer', 0, 1),
+('Chân Váy Midi Xếp Ly', 'chan-vay-midi-xep-ly', 'Chân váy midi xếp ly thanh lịch', 'Chân váy midi xếp ly thiết kế thanh lịch và sang trọng. Chất liệu voan nhún nhẹ nhàng, bay bổng. Dáng váy xếp ly đều đẹp, che khuyết điểm chân. Phù hợp đi làm, đi chơi hay dự tiệc.', 399000, 480000, 200000, 'CVM-XEP-001', '8934567890090', 80, 5, 10, 2, 'female', 'adult', 'Voan Nhún', 'Trơn', 'Four Seasons', 310, 1, 1),
+('Chân Váy Tennis Caro', 'chan-vay-tennis-caro', 'Chân váy tennis caro xinh xắn', 'Chân váy tennis chất liệu vải bông thoáng mát. Họa tiết caro trendy. Dáng ngắn trên gối, năng động. Phù hợp mặc đi chơi, dạo phố, picnic.', 299000, NULL, 150000, 'CVM-CARO-001', '8934567890091', 100, 5, 10, 4, 'female', 'adult', 'Cotton Caro', 'Caro', 'Summer', 195, 0, 1),
 
 -- Đầm Nữ
-('Đầm Midi Ôm Body Sexy', 'dam-midi-ong-body', 'Đầm midi ôm body sexy quyến rũ', 'Đầm midi ôm body thiết kế sexy và quyến rũ. Chất liệu thun co giãn ôm vừa, tôn dáng. Cổ V thanh lịch. Chiều dài midi phía trên gối vừa đủ. Phù hợp đi tiệc, đi chơi hoặc date.', 699000, 850000, 350000, 'DMN-BODY-001', '8934567890100', 60, 11, 1, 'female', 'adult', 'Thun Co Giãn', 'Trơn', 'Four Seasons', 1, 1),
-('Đầm Xòe Mini Hoa Nhí', 'dam-xoe-mini-hoa-nhi', 'Đầm xòe mini hoa nhí xinh xắn', 'Đầm xòe mini hoa nhí thiết kế xinh xắn, trẻ trung. Chất liệu voan chiffon nhẹ nhàng, bay bổng. Phần thân trên ôm nhẹ, chân váy xòe. Phù hợp đi chơi, dạo phố, picnic hay cafe.', 499000, NULL, 250000, 'DMN-XOE-001', '8934567890101', 75, 11, 3, 'female', 'adult', 'Chiffon', 'Hoa', 'Spring', 0, 1),
-('Đầm Suông Dài Basic Đen', 'dam-suong-dai-basic', 'Đầm suông dài basic đen đơn giản', 'Đầm suông dài basic màu đen đơn giản nhưng không nhàm chán. Chất liệu thun modal mềm mại, thoáng khí. Thiết kế suông rộng rãi, thoải mái mọi dáng người. Cổ tròn đơn giản, tay dài.', 349000, NULL, 175000, 'DMN-SUONG-001', '8934567890102', 120, 11, 4, 'female', 'adult', 'Modal', 'Trơn', 'Four Seasons', 0, 1),
+('Đầm Midi Ôm Body Sexy', 'dam-midi-ong-body', 'Đầm midi ôm body sexy quyến rũ', 'Đầm midi ôm body thiết kế sexy và quyến rũ. Chất liệu thun co giãn ôm vừa, tôn dáng. Cổ V thanh lịch. Chiều dài midi phía trên gối vừa đủ. Phù hợp đi tiệc, đi chơi hoặc date.', 699000, 850000, 350000, 'DMN-BODY-001', '8934567890100', 60, 5, 11, 1, 'female', 'adult', 'Thun Co Giãn', 'Trơn', 'Four Seasons', 380, 1, 1),
+('Đầm Xòe Mini Hoa Nhí', 'dam-xoe-mini-hoa-nhi', 'Đầm xòe mini hoa nhí xinh xắn', 'Đầm xòe mini hoa nhí thiết kế xinh xắn, trẻ trung. Chất liệu voan chiffon nhẹ nhàng, bay bổng. Phần thân trên ôm nhẹ, chân váy xòe. Phù hợp đi chơi, dạo phố, picnic hay cafe.', 499000, NULL, 250000, 'DMN-XOE-001', '8934567890101', 75, 5, 11, 3, 'female', 'adult', 'Chiffon', 'Hoa', 'Spring', 240, 0, 1),
+('Đầm Suông Dài Basic Đen', 'dam-suong-dai-basic', 'Đầm suông dài basic đen đơn giản', 'Đầm suông dài basic màu đen đơn giản nhưng không nhàm chán. Chất liệu thun modal mềm mại, thoáng khí. Thiết kế suông rộng rãi, thoải mái mọi dáng người. Cổ tròn đơn giản, tay dài.', 349000, NULL, 175000, 'DMN-SUONG-001', '8934567890102', 120, 5, 11, 4, 'female', 'adult', 'Modal', 'Trơn', 'Four Seasons', 180, 0, 1),
 
 -- Quần Nữ
-('Quần Jeans Nữ Wide Leg', 'quan-jeans-nu-wide-leg', 'Quần jeans nữ wide leg retro', 'Quần jeans nữ wide leg phong cách retro trending. Chất liệu denim mềm mại, không cứng. Thiết kế dáng xuông wide leg rộng rãi, thoải mái. High waist giúp tôn eo và che khuyết điểm.', 649000, 780000, 325000, 'QJN-WIDE-002', '8934567890110', 90, 12, 1, 'female', 'adult', 'Denim', 'Trơn', 'Four Seasons', 1, 1),
-('Quần Dài Nữ Ống Suông', 'quan-dai-nu-ong-suong', 'Quần dài nữ ống suông linen', 'Quần dài nữ ống suông chất liệu linen thoáng mát. Thiết kế ống rộng suông, thoải mái cho mọi hoạt động. High waist có thắt lưng rời. Phù hợp mùa hè, đi biển, đi dạo phố.', 429000, 520000, 215000, 'QDN-SUONG-001', '8934567890111', 100, 12, 3, 'female', 'adult', 'Linen', 'Trơn', 'Summer', 0, 1),
+('Quần Jeans Nữ Wide Leg', 'quan-jeans-nu-wide-leg', 'Quần jeans nữ wide leg retro', 'Quần jeans nữ wide leg phong cách retro trending. Chất liệu denim mềm mại, không cứng. Thiết kế dáng xuông wide leg rộng rãi, thoải mái. High waist giúp tôn eo và che khuyết điểm.', 649000, 780000, 325000, 'QJN-WIDE-002', '8934567890110', 90, 5, 12, 1, 'female', 'adult', 'Denim', 'Trơn', 'Four Seasons', 330, 1, 1),
+('Quần Dài Nữ Ống Suông', 'quan-dai-nu-ong-suong', 'Quần dài nữ ống suông linen', 'Quần dài nữ ống suông chất liệu linen thoáng mát. Thiết kế ống rộng suông, thoải mái cho mọi hoạt động. High waist có thắt lưng rời. Phù hợp mùa hè, đi biển, đi dạo phố.', 429000, 520000, 215000, 'QDN-SUONG-001', '8934567890111', 100, 5, 12, 3, 'female', 'adult', 'Linen', 'Trơn', 'Summer', 220, 0, 1),
 
 -- Áo Khoác Nam
-('Áo Khoác Gió Nam Nữ Unisex', 'ao-khoac-gio-nam-nu', 'Áo khoác gió chống nước unisex', 'Áo khoác gió nam nữ phong cách sporty, chống nước hiệu quả. Chất liệu vải dù cao cấp, nhẹ và bền. Nón có dây rút điều chỉnh. Nhiều túi tiện dụng. Form unisex.', 699000, 850000, 350000, 'AKG-GIO-001', '8934567890120', 85, 13, 5, 'unisex', 'adult', 'Vải Dù', 'Trơn', 'Rainy', 1, 1),
-('Áo Blazer Nam Slim Fit', 'ao-blazer-nam-slim-fit', 'Áo blazer nam slim lịch lãm', 'Áo blazer nam slim fit thiết kế lịch lãm và sang trọng. Chất liệu vải wool blend cao cấp, không nhăn. Cổ blazer classic, 2 hàng cúc. Phù hợp đi làm, dự họp, đi tiệc.', 1299000, 1550000, 650000, 'ABL-SLIM-001', '8934567890121', 40, 13, 2, 'male', 'adult', 'Wool Blend', 'Trơn', 'Four Seasons', 1, 1),
-('Áo Khoác Denim Nam Wash Nhẹ', 'ao-khoac-denim-nam', 'Áo khoác denim wash vintage', 'Áo khoác denim nam chất liệu jeans 100% cotton, bền đẹp. Wash nhẹ vintage look thời trang. Thiết kế classic với 4 túi, cúc kim loại. Form regular vừa vặn.', 899000, 1100000, 450000, 'AKD-DENIM-001', '8934567890122', 65, 13, 6, 'male', 'adult', '100% Cotton Denim', 'Trơn', 'Four Seasons', 0, 1),
+('Áo Khoác Gió Nam Nữ Unisex', 'ao-khoac-gio-nam-nu', 'Áo khoác gió chống nước unisex', 'Áo khoác gió nam nữ phong cách sporty, chống nước hiệu quả. Chất liệu vải dù cao cấp, nhẹ và bền. Nón có dây rút điều chỉnh. Nhiều túi tiện dụng. Form unisex.', 699000, 850000, 350000, 'AKG-GIO-001', '8934567890120', 85, 5, 13, 5, 'unisex', 'adult', 'Vải Dù', 'Trơn', 'Rainy', 480, 1, 1),
+('Áo Blazer Nam Slim Fit', 'ao-blazer-nam-slim-fit', 'Áo blazer nam slim lịch lãm', 'Áo blazer nam slim fit thiết kế lịch lãm và sang trọng. Chất liệu vải wool blend cao cấp, không nhăn. Cổ blazer classic, 2 hàng cúc. Phù hợp đi làm, dự họp, đi tiệc.', 1299000, 1550000, 650000, 'ABL-SLIM-001', '8934567890121', 40, 5, 13, 2, 'male', 'adult', 'Wool Blend', 'Trơn', 'Four Seasons', 145, 1, 1),
+('Áo Khoác Denim Nam Wash Nhẹ', 'ao-khoac-denim-nam', 'Áo khoác denim wash vintage', 'Áo khoác denim nam chất liệu jeans 100% cotton, bền đẹp. Wash nhẹ vintage look thời trang. Thiết kế classic với 4 túi, cúc kim loại. Form regular vừa vặn.', 899000, 1100000, 450000, 'AKD-DENIM-001', '8934567890122', 65, 5, 13, 6, 'male', 'adult', '100% Cotton Denim', 'Trơn', 'Four Seasons', 190, 0, 1),
 
 -- Áo Khoác Nữ
-('Áo Cardigan Nữ Len Mỏng', 'ao-cardigan-nu-len', 'Áo cardigan nữ len phong cách Hàn', 'Áo cardigan nữ len mỏng phong cách K-fashion Hàn Quốc. Chất liệu len acrylic nhẹ, ấm áp. Thiết kế mở phía trước, không cúc. Dáng rộng thoải mái, phối layers đẹp.', 549000, 680000, 275000, 'ACN-LEN-001', '8934567890130', 70, 14, 3, 'female', 'adult', 'Len Acrylic', 'Dệt kim', 'Autumn', 1, 1),
+('Áo Cardigan Nữ Len Mỏng', 'ao-cardigan-nu-len', 'Áo cardigan nữ len phong cách Hàn', 'Áo cardigan nữ len mỏng phong cách K-fashion Hàn Quốc. Chất liệu len acrylic nhẹ, ấm áp. Thiết kế mở phía trước, không cúc. Dáng rộng thoải mái, phối layers đẹp.', 549000, 680000, 275000, 'ACN-LEN-001', '8934567890130', 70, 5, 14, 3, 'female', 'adult', 'Len Acrylic', 'Dệt kim', 'Autumn', 260, 1, 1),
 
 -- Túi Xách
-('Túi Xách Nữ Đeo Chéo Minimal', 'tui-xach-nu-deo-cheo', 'Túi xách nữ minimal da PU', 'Túi xách nữ đeo chéo phong cách minimal, hiện đại. Chất liệu da PU cao cấp, bền đẹp. Kích thước vừa đủ cho điện thoại, ví, keys. Dây đeo có thể điều chỉnh độ dài.', 449000, 550000, 225000, 'TXN-MINI-001', '8934567890140', 90, 15, 1, 'female', 'adult', 'Da PU', 'Trơn', 'Four Seasons', 1, 1),
-('Túi Xách Nam Đeo Chéo', 'tui-xach-nam-deo-cheo', 'Túi xách nam thể thao da', 'Túi xách nam đeo chéo phong cách thể thao, năng động. Chất liệu da tổng hợp bền, chống nước. Nhiều ngăn, đựng được laptop 14 inch. Phù hợp đi học, đi làm, du lịch.', 599000, 720000, 300000, 'TXN-SPORT-001', '8934567890141', 75, 15, 5, 'male', 'adult', 'Da Tổng Hợp', 'Trơn', 'Four Seasons', 0, 1),
+('Túi Xách Nữ Đeo Chéo Minimal', 'tui-xach-nu-deo-cheo', 'Túi xách nữ minimal da PU', 'Túi xách nữ đeo chéo phong cách minimal, hiện đại. Chất liệu da PU cao cấp, bền đẹp. Kích thước vừa đủ cho điện thoại, ví, keys. Dây đeo có thể điều chỉnh độ dài.', 449000, 550000, 225000, 'TXN-MINI-001', '8934567890140', 90, 5, 15, 1, 'female', 'adult', 'Da PU', 'Trơn', 'Four Seasons', 270, 1, 1),
+('Túi Xách Nam Đeo Chéo', 'tui-xach-nam-deo-cheo', 'Túi xách nam thể thao da', 'Túi xách nam đeo chéo phong cách thể thao, năng động. Chất liệu da tổng hợp bền, chống nước. Nhiều ngăn, đựng được laptop 14 inch. Phù hợp đi học, đi làm, du lịch.', 599000, 720000, 300000, 'TXN-SPORT-001', '8934567890141', 75, 5, 15, 5, 'male', 'adult', 'Da Tổng Hợp', 'Trơn', 'Four Seasons', 165, 0, 1),
 
 -- Thắt Lưng
-('Thắt Lưng Da Bò Nam Cao Cấp', 'that-lung-da-bo-nam', 'Thắt lưng da bò 100%', 'Thắt lưng da bò nam cao cấp, da thật 100%. Khóa kim loại sang trọng, chắc chắn. Chiều rộng 3.5cm phù hợp với mọi quần. Màu đen và nâu cổ điển. Phù hợp đi làm, đi tiệc.', 599000, 720000, 300000, 'TLD-BO-001', '8934567890150', 100, 16, 6, 'male', 'adult', 'Da Bò', 'Trơn', 'Four Seasons', 0, 1),
+('Thắt Lưng Da Bò Nam Cao Cấp', 'that-lung-da-bo-nam', 'Thắt lưng da bò 100%', 'Thắt lưng da bò nam cao cấp, da thật 100%. Khóa kim loại sang trọng, chắc chắn. Chiều rộng 3.5cm phù hợp với mọi quần. Màu đen và nâu cổ điển. Phù hợp đi làm, đi tiệc.', 599000, 720000, 300000, 'TLD-BO-001', '8934567890150', 100, 5, 16, 6, 'male', 'adult', 'Da Bò', 'Trơn', 'Four Seasons', 130, 0, 1),
 
 -- Khăn Choàng
-('Khăn Choàng Nữ Lụa Cao Cấp', 'khan-choang-nu-lua', 'Khăn choàng lụa mềm mại', 'Khăn choàng nữ lụa cao cấp, mềm mại và sang trọng. Kích thước 180x70cm đa dụng. Có thể đeo nhiều kiểu: quấn cổ, choàng vai, buộc tóc. Màu pastel nhẹ nhàng.', 299000, NULL, 150000, 'KCN-LUA-001', '8934567890160', 150, 17, 2, 'female', 'adult', 'Lụa', 'Trơn', 'Four Seasons', 0, 1),
+('Khăn Choàng Nữ Lụa Cao Cấp', 'khan-choang-nu-lua', 'Khăn choàng lụa mềm mại', 'Khăn choàng nữ lụa cao cấp, mềm mại và sang trọng. Kích thước 180x70cm đa dụng. Có thể đeo nhiều kiểu: quấn cổ, choàng vai, buộc tóc. Màu pastel nhẹ nhàng.', 299000, NULL, 150000, 'KCN-LUA-001', '8934567890160', 150, 5, 17, 2, 'female', 'adult', 'Lụa', 'Trơn', 'Four Seasons', 95, 0, 1),
 
 -- Mũ Nón
-('Mũ Snapback Nam Unisex', 'mu-snapback-nam', 'Mũ snapback streetwear', 'Mũ snapback nam unisex phong cách streetwear, trẻ trung. Chất liệu vải nỉ bông cao cấp, form giữ shape đẹp. Logo broider tinh tế. Có thể điều chỉnh size.', 249000, 320000, 125000, 'MSN-SNAP-001', '8934567890170', 120, 18, 1, 'unisex', 'adult', 'Nỉ Bông', 'Trơn', 'Four Seasons', 0, 1),
+('Mũ Snapback Nam Unisex', 'mu-snapback-nam', 'Mũ snapback streetwear', 'Mũ snapback nam unisex phong cách streetwear, trẻ trung. Chất liệu vải nỉ bông cao cấp, form giữ shape đẹp. Logo broider tinh tế. Có thể điều chỉnh size.', 249000, 320000, 125000, 'MSN-SNAP-001', '8934567890170', 120, 5, 18, 1, 'unisex', 'adult', 'Nỉ Bông', 'Trơn', 'Four Seasons', 175, 0, 1),
 
 -- Set Đồ Nam
-('Bộ Đồ Thể Thao Nam 3 Món', 'bo-do-the-thao-nam-3-mon', 'Bộ đồ thể thao nam: áo + quần shorts + quần dài', 'Bộ đồ thể thao nam 3 món đầy đủ: áo thun thể thao, quần shorts và quần dài jogger. Chất liệu thun thể thao co giãn 4 chiều, thoáng khí. Bộ đồ tiện lợi.', 799000, 980000, 400000, 'BDT-3M-001', '8934567890180', 55, 19, 5, 'male', 'adult', 'Thun Thể Thao', 'Trơn', 'Four Seasons', 1, 1),
+('Bộ Đồ Thể Thao Nam 3 Món', 'bo-do-the-thao-nam-3-mon', 'Bộ đồ thể thao nam: áo + quần shorts + quần dài', 'Bộ đồ thể thao nam 3 món đầy đủ: áo thun thể thao, quần shorts và quần dài jogger. Chất liệu thun thể thao co giãn 4 chiều, thoáng khí. Bộ đồ tiện lợi.', 799000, 980000, 400000, 'BDT-3M-001', '8934567890180', 55, 5, 19, 5, 'male', 'adult', 'Thun Thể Thao', 'Trơn', 'Four Seasons', 120, 1, 1),
 
 -- Set Đồ Nữ
-('Set Váy + Áo Blouse Nữ', 'set-vay-ao-blouse-nu', 'Set chân váy + blouse nữ công sở', 'Set váy + áo blouse nữ bộ đôi phong cách công sở sang trọng. Áo blouse lụa cao cấp, chân váy midi xếp ly thanh lịch. Bộ đồ phối hợp hoàn hảo, tiện lợi.', 899000, 1100000, 450000, 'SVA-BL-001', '8934567890190', 45, 20, 2, 'female', 'adult', 'Lụa + Voan', 'Trơn', 'Four Seasons', 1, 1),
+('Set Váy + Áo Blouse Nữ', 'set-vay-ao-blouse-nu', 'Set chân váy + blouse nữ công sở', 'Set váy + áo blouse nữ bộ đôi phong cách công sở sang trọng. Áo blouse lụa cao cấp, chân váy midi xếp ly thanh lịch. Bộ đồ phối hợp hoàn hảo, tiện lợi.', 899000, 1100000, 450000, 'SVA-BL-001', '8934567890190', 45, 5, 20, 2, 'female', 'adult', 'Lụa + Voan', 'Trơn', 'Four Seasons', 88, 1, 1),
 
 -- Áo Trẻ Em Bé Gái
-('Áo Thun Trẻ Em Bé Gái Hoa', 'ao-thun-tre-em-be-gai-hoa', 'Áo thun trẻ em bé gái họa tiết hoa dễ thương', 'Áo thun trẻ em bé gái chất liệu cotton 100% mềm mại, thoáng mát. Họa tiết hoa in xinh xắn, trẻ trung. Form regular phù hợp bé gái 3-8 tuổi. Nhiều màu sắc tươi sáng.', 149000, 180000, 75000, 'ATT-BG-001', '8934567890200', 80, 21, 4, 'female', 'kids', '100% Cotton', 'Hoa', 'Four Seasons', 1, 1),
-('Áo Thun Trẻ Em Bé Trai Cars', 'ao-thun-tre-em-be-trai-cars', 'Áo thun trẻ em bé trai in hình xe', 'Áo thun trẻ em bé trai phong cách, in hình xe hot trend. Chất cotton co giãn thoải mái cho bé vui chơi. Form regular vừa vặn. Phù hợp bé trai 4-10 tuổi.', 159000, 190000, 80000, 'ATT-BT-001', '8934567890201', 75, 21, 1, 'male', 'kids', 'Cotton Co Giãn', 'Họa tiết', 'Four Seasons', 1, 1),
-('Áo Sơ Mi Trẻ Em Bé Gái Cổ Vuông', 'ao-so-mi-tre-em-be-gai', 'Áo sơ mi trẻ em bé gái cổ vuông xinh', 'Áo sơ mi trẻ em bé gái thiết kế cổ vuông thanh lịch. Chất vải mềm mại, không nhăn. Phù hợp đi học, đi chơi. Form regular thoải mái cho bé.', 199000, 250000, 100000, 'ASM-TE-BG-001', '8934567890202', 60, 21, 2, 'female', 'kids', 'Vải Cotton', 'Trơn', 'Four Seasons', 0, 1),
+('Áo Thun Trẻ Em Bé Gái Hoa', 'ao-thun-tre-em-be-gai-hoa', 'Áo thun trẻ em bé gái họa tiết hoa dễ thương', 'Áo thun trẻ em bé gái chất liệu cotton 100% mềm mại, thoáng mát. Họa tiết hoa in xinh xắn, trẻ trung. Form regular phù hợp bé gái 3-8 tuổi. Nhiều màu sắc tươi sáng.', 149000, 180000, 75000, 'ATT-BG-001', '8934567890200', 80, 5, 21, 4, 'female', 'kids', '100% Cotton', 'Hoa', 'Four Seasons', 195, 1, 1),
+('Áo Thun Trẻ Em Bé Trai Cars', 'ao-thun-tre-em-be-trai-cars', 'Áo thun trẻ em bé trai in hình xe', 'Áo thun trẻ em bé trai phong cách, in hình xe hot trend. Chất cotton co giãn thoải mái cho bé vui chơi. Form regular vừa vặn. Phù hợp bé trai 4-10 tuổi.', 159000, 190000, 80000, 'ATT-BT-001', '8934567890201', 75, 5, 21, 1, 'male', 'kids', 'Cotton Co Giãn', 'Họa tiết', 'Four Seasons', 210, 1, 1),
+('Áo Sơ Mi Trẻ Em Bé Gái Cổ Vuông', 'ao-so-mi-tre-em-be-gai', 'Áo sơ mi trẻ em bé gái cổ vuông xinh', 'Áo sơ mi trẻ em bé gái thiết kế cổ vuông thanh lịch. Chất vải mềm mại, không nhăn. Phù hợp đi học, đi chơi. Form regular thoải mái cho bé.', 199000, 250000, 100000, 'ASM-TE-BG-001', '8934567890202', 60, 5, 21, 2, 'female', 'kids', 'Vải Cotton', 'Trơn', 'Four Seasons', 145, 0, 1),
 
 -- Quần Trẻ Em
-('Quần Jeans Trẻ Em Bé Gái', 'quan-jeans-tre-em-be-gai', 'Quần jeans trẻ em bé gái xinh xắn', 'Quần jeans trẻ em bé gái chất liệu denim mềm, co giãn nhẹ. Wash nhẹ vintage đẹp mắt. Thiết kế 2 túi. Phù hợp bé gái 3-10 tuổi mặc hàng ngày.', 249000, 300000, 125000, 'QJT-BG-001', '8934567890210', 65, 22, 6, 'female', 'kids', 'Denim Mềm', 'Trơn', 'Four Seasons', 1, 1),
-('Quần Short Trẻ Em Bé Trai', 'quan-short-tre-em-be-trai', 'Quần shorts trẻ em bé trai thể thao', 'Quần shorts trẻ em bé trai phong cách thể thao, năng động. Chất thun co giãn thoải mái. Cạp chun co giãn, dễ mặc. Phù hợp bé trai 4-12 tuổi mùa hè.', 179000, NULL, 90000, 'QST-BT-001', '8934567890211', 70, 22, 5, 'male', 'kids', 'Thun Co Giãn', 'Trơn', 'Summer', 1, 1),
-('Quần Dài Trẻ Em Cạp Chun', 'quan-dai-tre-em-cach-chun', 'Quần dài trẻ em cạp chun thoải mái', 'Quần dài trẻ em unisex cạp chun co giãn thoải mái. Chất vải cotton thoáng mát, dễ giặt. Thiết kế đơn giản, dễ phối. Phù hợp mọi hoàn cảnh.', 199000, 240000, 100000, 'QDT-CACH-001', '8934567890212', 85, 22, 4, 'unisex', 'kids', 'Cotton', 'Trơn', 'Four Seasons', 0, 1),
+('Quần Jeans Trẻ Em Bé Gái', 'quan-jeans-tre-em-be-gai', 'Quần jeans trẻ em bé gái xinh xắn', 'Quần jeans trẻ em bé gái chất liệu denim mềm, co giãn nhẹ. Wash nhẹ vintage đẹp mắt. Thiết kế 2 túi. Phù hợp bé gái 3-10 tuổi mặc hàng ngày.', 249000, 300000, 125000, 'QJT-BG-001', '8934567890210', 65, 5, 22, 6, 'female', 'kids', 'Denim Mềm', 'Trơn', 'Four Seasons', 175, 1, 1),
+('Quần Short Trẻ Em Bé Trai', 'quan-short-tre-em-be-trai', 'Quần shorts trẻ em bé trai thể thao', 'Quần shorts trẻ em bé trai phong cách thể thao, năng động. Chất thun co giãn thoải mái. Cạp chun co giãn, dễ mặc. Phù hợp bé trai 4-12 tuổi mùa hè.', 179000, NULL, 90000, 'QST-BT-001', '8934567890211', 70, 5, 22, 5, 'male', 'kids', 'Thun Co Giãn', 'Trơn', 'Summer', 190, 1, 1),
+('Quần Dài Trẻ Em Cạp Chun', 'quan-dai-tre-em-cach-chun', 'Quần dài trẻ em cạp chun thoải mái', 'Quần dài trẻ em unisex cạp chun co giãn thoải mái. Chất vải cotton thoáng mát, dễ giặt. Thiết kế đơn giản, dễ phối. Phù hợp mọi hoàn cảnh.', 199000, 240000, 100000, 'QDT-CACH-001', '8934567890212', 85, 5, 22, 4, 'unisex', 'kids', 'Cotton', 'Trơn', 'Four Seasons', 155, 0, 1),
 
 -- Váy Trẻ Em
-('Váy Xếp Ly Trẻ Em Bé Gái', 'vay-xep-ly-tre-em', 'Váy xếp ly trẻ em bé gái dễ thương', 'Váy xếp ly trẻ em bé gái thiết kế xinh xắn, bồng bềnh. Chất voan nhẹ nhàng, bay bổng. Phù hợp bé gái 3-8 tuổi đi chơi, đi tiệc. Nhiều màu pastel dễ thương.', 229000, 280000, 115000, 'VXL-TE-001', '8934567890220', 55, 23, 3, 'female', 'kids', 'Voan', 'Xếp ly', 'Four Seasons', 1, 1),
+('Váy Xếp Ly Trẻ Em Bé Gái', 'vay-xep-ly-tre-em', 'Váy xếp ly trẻ em bé gái dễ thương', 'Váy xếp ly trẻ em bé gái thiết kế xinh xắn, bồng bềnh. Chất voan nhẹ nhàng, bay bổng. Phù hợp bé gái 3-8 tuổi đi chơi, đi tiệc. Nhiều màu pastel dễ thương.', 229000, 280000, 115000, 'VXL-TE-001', '8934567890220', 55, 5, 23, 3, 'female', 'kids', 'Voan', 'Xếp ly', 'Four Seasons', 165, 1, 1),
 
 -- Đầm Trẻ Em
-('Đầm Xòe Trẻ Em Bé Gái', 'dam-xoe-tre-em', 'Đầm xòe trẻ em bé gái yêu', 'Đầm xòe trẻ em bé gái thiết kế bồng bềnh, yêu yêu. Chất vải mềm mại, thoáng mát. Cổ tròn bo nhẹ. Phù hợp bé gái 3-10 tuổi đi chơi, sinh nhật, đi tiệc.', 299000, 360000, 150000, 'DXL-TE-001', '8934567890230', 45, 24, 3, 'female', 'kids', 'Voan Mềm', 'Xòe', 'Four Seasons', 1, 1),
-('Đầm Thun Trẻ Em Bé Gái', 'dam-thun-tre-em', 'Đầm thun trẻ em bé gái basic', 'Đầm thun trẻ em bé gái form A-line đơn giản. Chất thun cotton co giãn, thoải mái cho bé vui chơi. Cổ tròn dễ mặc. Phù hợp mặc nhà, đi chơi.', 199000, NULL, 100000, 'DTT-TE-001', '8934567890231', 60, 24, 4, 'female', 'kids', 'Thun Cotton', 'Trơn', 'Four Seasons', 0, 1),
+('Đầm Xòe Trẻ Em Bé Gái', 'dam-xoe-tre-em', 'Đầm xòe trẻ em bé gái yêu', 'Đầm xòe trẻ em bé gái thiết kế bồng bềnh, yêu yêu. Chất vải mềm mại, thoáng mát. Cổ tròn bo nhẹ. Phù hợp bé gái 3-10 tuổi đi chơi, sinh nhật, đi tiệc.', 299000, 360000, 150000, 'DXL-TE-001', '8934567890230', 45, 5, 24, 3, 'female', 'kids', 'Voan Mềm', 'Xòe', 'Four Seasons', 180, 1, 1),
+('Đầm Thun Trẻ Em Bé Gái', 'dam-thun-tre-em', 'Đầm thun trẻ em bé gái basic', 'Đầm thun trẻ em bé gái form A-line đơn giản. Chất thun cotton co giãn, thoải mái cho bé vui chơi. Cổ tròn dễ mặc. Phù hợp mặc nhà, đi chơi.', 199000, NULL, 100000, 'DTT-TE-001', '8934567890231', 60, 5, 24, 4, 'female', 'kids', 'Thun Cotton', 'Trơn', 'Four Seasons', 135, 0, 1),
 
 -- Bộ Đồ Trẻ Em
-('Bộ Đồ Thun Trẻ Em Bé Gái', 'bo-do-thun-tre-em-be-gai', 'Bộ đồ thun trẻ em bé gái xinh', 'Bộ đồ trẻ em bé gái gồm áo thun + chân váy. Chất thun cotton mềm mại, thoáng mát. Thiết kế phối màu xinh xắn. Phù hợp bé gái 3-7 tuổi mặc nhà, đi chơi.', 349000, 420000, 175000, 'BDT-BG-001', '8934567890240', 40, 25, 4, 'female', 'kids', 'Thun Cotton', 'Trơn', 'Four Seasons', 1, 1),
-('Bộ Đồ Thể Thao Trẻ Em Bé Trai', 'bo-do-the-thao-tre-em', 'Bộ đồ thể thao trẻ em bé trai', 'Bộ đồ thể thao trẻ em bé trai gồm áo thun + quần shorts. Chất thun co giãn 4 chiều, thoáng khí. Thiết kế sporty năng động. Phù hợp bé trai 4-12 tuổi vui chơi.', 299000, 360000, 150000, 'BDTT-BT-001', '8934567890241', 50, 25, 5, 'male', 'kids', 'Thun Thể Thao', 'Trơn', 'Summer', 0, 1);
+('Bộ Đồ Thun Trẻ Em Bé Gái', 'bo-do-thun-tre-em-be-gai', 'Bộ đồ thun trẻ em bé gái xinh', 'Bộ đồ trẻ em bé gái gồm áo thun + chân váy. Chất thun cotton mềm mại, thoáng mát. Thiết kế phối màu xinh xắn. Phù hợp bé gái 3-7 tuổi mặc nhà, đi chơi.', 349000, 420000, 175000, 'BDT-BG-001', '8934567890240', 40, 5, 25, 4, 'female', 'kids', 'Thun Cotton', 'Trơn', 'Four Seasons', 120, 1, 1),
+('Bộ Đồ Thể Thao Trẻ Em Bé Trai', 'bo-do-the-thao-tre-em', 'Bộ đồ thể thao trẻ em bé trai', 'Bộ đồ thể thao trẻ em bé trai gồm áo thun + quần shorts. Chất thun co giãn 4 chiều, thoáng khí. Thiết kế sporty năng động. Phù hợp bé trai 4-12 tuổi vui chơi.', 299000, 360000, 150000, 'BDTT-BT-001', '8934567890241', 50, 5, 25, 5, 'male', 'kids', 'Thun Thể Thao', 'Trơn', 'Summer', 98, 0, 1);
 
 -- =====================================================
 -- Seed: Product Images
+-- NOTE: All images stored here, NOT in products.image_url
 -- =====================================================
 INSERT INTO product_images (product_id, url, alt_text, sort_order, is_primary, is_thumbnail) VALUES
 -- Áo Thun Nam Basic (1)
@@ -355,7 +374,7 @@ INSERT INTO product_images (product_id, url, alt_text, sort_order, is_primary, i
 (22, 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=800&fit=crop', 'Quần Dài Suông', 1, 1, 1),
 -- Áo Khoác Gió (23)
 (23, 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&h=800&fit=crop', 'Áo Khoác Gió Đen', 1, 1, 1),
-(23, 'https://images.unsplash.com/photo-1544923246-77307dd628b8?w=800&h=800&fit=crop', 'Áo Khoác Gió Xanh', 2, 0, 0),
+(23, 'https://images.unsplash.com/photo-1544928716-9ef0b4c4f2b8?w=800&h=800&fit=crop', 'Áo Khoác Gió Xanh', 2, 0, 0),
 -- Áo Blazer Nam (24)
 (24, 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&h=800&fit=crop', 'Áo Blazer Slim', 1, 1, 1),
 -- Áo Khoác Denim (25)
@@ -700,26 +719,28 @@ INSERT INTO expense_categories (name, code, description, parent_id, is_system, i
 
 -- =====================================================
 -- Seed: Product Reviews
+-- NOTE: includes is_active column
 -- =====================================================
-INSERT INTO product_reviews (product_id, user_id, order_id, rating, title, content, pros, cons, size_rating, is_verified_purchase, is_approved, admin_reply, helpful_count, created_at) VALUES
-(1, 2, NULL, 5, 'Áo đẹp, chất lượng tốt', 'Áo mặc rất thoáng, chất cotton mềm mại. Đường may đẹp, không bị tuột chỉ. Đóng gói cẩn thận. Shop tư vấn nhiệt tình. Sẽ ủng hộ tiếp!', 'Chất vải tốt, thoáng mát', 'Màu hơi nhạt hơn ảnh', 'fit', 1, 1, 'Cảm ơn bạn đã tin tưởng shop!', 15, '2026-03-01 10:30:00'),
-(1, 3, NULL, 4, 'Sản phẩm tốt, giao nhanh', 'Áo đẹp như hình, giao hàng nhanh trong 2 ngày. Mặc vừa form người. Điểm trừ vì màu hơi bị lem nhẹ khi giặt lần đầu.', 'Form đẹp, giá hợp lý', 'Màu lem nhẹ khi giặt', 'fit', 1, 1, 'Bạn nên giặt riêng lần đầu nhé!', 8, '2026-03-05 14:20:00'),
-(7, 4, NULL, 5, 'Quần jeans đẹp như mẫu', 'Quần jeans slim fit mặc rất vừa, ôm chân đẹp. Wash màu đẹp, không phai. Đi làm hay đi chơi đều phù hợp. Đã mua 2 cái!', 'Form đẹp, chất tốt', 'Hơi cứng lần đầu', 'fit', 1, 1, 'Cảm ơn bạn đã ủng hộ!', 22, '2026-03-10 09:15:00'),
-(15, 5, NULL, 4, 'Croptop xinh, giá ok', 'Áo croptop mặc xinh lắm, form đẹp tôn dáng. Phù hợp với giá tiền. Shop tặng kèm sticker dễ thương. Giao hàng nhanh.', 'Form đẹp, dễ phối', 'Hơi mỏng', 'large', 1, 1, 'Cảm ơn bạn!', 12, '2026-03-15 16:45:00'),
-(18, 6, NULL, 5, 'Đầm body quyến rũ', 'Đầm midi body mặc vào siêu quyến rũ luôn! Chất thun co giãn tốt, ôm body hoàn hảo. Đi tiệc được, đi chơi cũng được. Đã có 3 màu!', 'Ôm body, co giãn tốt', 'Cổ hơi rộng', 'fit', 1, 1, 'Chúc bạn luôn xinh đẹp!', 30, '2026-03-20 11:30:00'),
-(23, 7, NULL, 5, 'Áo khoác gió chất lượng', 'Áo khoác gió chống nước tốt, mặc vào mưa nhẹ không thấm. Form unisex nên mua cho chồng cùng mặc được. Rất hài lòng!', 'Chống nước tốt, form đẹp', 'Hơi nặng', 'fit', 1, 1, 'Cảm ơn bạn đã tin tưởng!', 18, '2026-03-25 08:20:00');
+INSERT INTO product_reviews (product_id, user_id, order_id, rating, title, content, pros, cons, size_rating, is_verified_purchase, is_approved, admin_reply, helpful_count, is_active, created_at) VALUES
+(1, 2, NULL, 5, 'Áo đẹp, chất lượng tốt', 'Áo mặc rất thoáng, chất cotton mềm mại. Đường may đẹp, không bị tuột chỉ. Đóng gói cẩn thận. Shop tư vấn nhiệt tình. Sẽ ủng hộ tiếp!', 'Chất vải tốt, thoáng mát', 'Màu hơi nhạt hơn ảnh', 'fit', 1, 1, 'Cảm ơn bạn đã tin tưởng shop!', 15, 1, '2026-03-01 10:30:00'),
+(1, 3, NULL, 4, 'Sản phẩm tốt, giao nhanh', 'Áo đẹp như hình, giao hàng nhanh trong 2 ngày. Mặc vừa form người. Điểm trừ vì màu hơi bị lem nhẹ khi giặt lần đầu.', 'Form đẹp, giá hợp lý', 'Màu lem nhẹ khi giặt', 'fit', 1, 1, 'Bạn nên giặt riêng lần đầu nhé!', 8, 1, '2026-03-05 14:20:00'),
+(7, 4, NULL, 5, 'Quần jeans đẹp như mẫu', 'Quần jeans slim fit mặc rất vừa, ôm chân đẹp. Wash màu đẹp, không phai. Đi làm hay đi chơi đều phù hợp. Đã mua 2 cái!', 'Form đẹp, chất tốt', 'Hơi cứng lần đầu', 'fit', 1, 1, 'Cảm ơn bạn đã ủng hộ!', 22, 1, '2026-03-10 09:15:00'),
+(15, 5, NULL, 4, 'Croptop xinh, giá ok', 'Áo croptop mặc xinh lắm, form đẹp tôn dáng. Phù hợp với giá tiền. Shop tặng kèm sticker dễ thương. Giao hàng nhanh.', 'Form đẹp, dễ phối', 'Hơi mỏng', 'large', 1, 1, 'Cảm ơn bạn!', 12, 1, '2026-03-15 16:45:00'),
+(18, 6, NULL, 5, 'Đầm body quyến rũ', 'Đầm midi body mặc vào siêu quyến rũ luôn! Chất thun co giãn tốt, ôm body hoàn hảo. Đi tiệc được, đi chơi cũng được. Đã có 3 màu!', 'Ôm body, co giãn tốt', 'Cổ hơi rộng', 'fit', 1, 1, 'Chúc bạn luôn xinh đẹp!', 30, 1, '2026-03-20 11:30:00'),
+(23, 7, NULL, 5, 'Áo khoác gió chất lượng', 'Áo khoác gió chống nước tốt, mặc vào mưa nhẹ không thấm. Form unisex nên mua cho chồng cùng mặc được. Rất hài lòng!', 'Chống nước tốt, form đẹp', 'Hơi nặng', 'fit', 1, 1, 'Cảm ơn bạn đã tin tưởng!', 18, 1, '2026-03-25 08:20:00');
 
 -- =====================================================
 -- Seed: Orders
+-- NOTE: includes all order columns used in code
 -- =====================================================
-INSERT INTO orders (order_number, user_id, status, customer_name, customer_email, customer_phone, shipping_full_address, shipping_city, shipping_district, shipping_address, subtotal, shipping_fee, discount_amount, discount_code, total_price, payment_method, payment_status, points_earned, points_used, created_at) VALUES
-('ORD-20260301-001', 2, 'delivered', 'Nguyễn Thị Lan', 'lan.nguyen@email.com', '0901234567', '78 Cái Khế, Quận Ninh Kiều, Cần Thơ', 'Cần Thơ', 'Quận Ninh Kiều', '78 Cái Khế, Quận Ninh Kiều', 1497000, 45000, 0, NULL, 1542000, 'cod', 'paid', 550, 0, '2026-03-01 10:30:00'),
-('ORD-20260305-002', 3, 'delivered', 'Trần Văn Minh', 'minh.tran@email.com', '0912345678', '23 Đường 3 Tháng 2, Quận 10, TP.HCM', 'TP.HCM', 'Quận 10', '23 Đường 3 Tháng 2, Quận 10', 2097000, 25000, 209700, 'SUMMER20', 1498000, 'vnpay', 'paid', 890, 0, '2026-03-05 14:20:00'),
-('ORD-20260310-003', 4, 'shipped', 'Lê Hoài Trang', 'trang.le@email.com', '0934567890', '56 Lý Tự Trọng, Quận 1, TP.HCM', 'TP.HCM', 'Quận 1', '56 Lý Tự Trọng, Quận 1', 599000, 25000, 0, NULL, 624000, 'cod', 'paid', 180, 0, '2026-03-10 09:15:00'),
-('ORD-20260315-004', 5, 'processing', 'Phạm Đức Anh', 'anh.pham@email.com', '0945678901', '89 Pasteur, Quận 3, TP.HCM', 'TP.HCM', 'Quận 3', '89 Pasteur, Quận 3', 1197000, 25000, 0, NULL, 1222000, 'cod', 'paid', 420, 0, '2026-03-15 16:45:00'),
-('ORD-20260320-005', 6, 'confirmed', 'Võ Thị Mai Hương', 'huong.vo@email.com', '0956789012', '123 Nguyễn Huệ, Quận 1, TP.HCM', 'TP.HCM', 'Quận 1', '123 Nguyễn Huệ, Quận 1', 699000, 25000, 50000, 'NEWCUSTOMER', 674000, 'momo', 'paid', 320, 0, '2026-03-20 11:30:00'),
-('ORD-20260325-006', 7, 'pending', 'Hoàng Đức Mạnh', 'manh.hoang@email.com', '0967890123', '456 Trần Hưng Đạo, Quận 5, TP.HCM', 'TP.HCM', 'Quận 5', '456 Trần Hưng Đạo, Quận 5', 1697000, 25000, 0, NULL, 1722000, 'cod', 'unpaid', 750, 0, '2026-03-25 08:20:00'),
-('ORD-20260401-007', 8, 'pending', 'Trương Thị Hạnh', 'hanh.truong@email.com', '0978901234', '789 Lê Lai, Quận 3, TP.HCM', 'TP.HCM', 'Quận 3', '789 Lê Lai, Quận 3', 997000, 25000, 0, NULL, 1022000, 'cod', 'unpaid', 210, 0, '2026-04-01 16:30:00');
+INSERT INTO orders (order_number, user_id, status, customer_name, customer_email, customer_phone, shipping_full_address, shipping_city, shipping_district, shipping_address, subtotal, shipping_fee, discount_amount, discount_code, total_price, payment_method, payment_status, points_earned, points_used, recipient_name, recipient_phone, ward, district, city, created_at) VALUES
+('ORD-20260301-001', 2, 'delivered', 'Nguyễn Thị Lan', 'lan.nguyen@email.com', '0901234567', '78 Cái Khế, Quận Ninh Kiều, Cần Thơ', 'Cần Thơ', 'Quận Ninh Kiều', '78 Cái Khế', 1497000, 45000, 0, NULL, 1542000, 'cod', 'paid', 550, 0, 'Nguyễn Thị Lan', '0901234567', 'Cái Khế', 'Quận Ninh Kiều', 'Cần Thơ', '2026-03-01 10:30:00'),
+('ORD-20260305-002', 3, 'delivered', 'Trần Văn Minh', 'minh.tran@email.com', '0912345678', '23 Đường 3 Tháng 2, Quận 10, TP.HCM', 'TP.HCM', 'Quận 10', '23 Đường 3 Tháng 2', 2097000, 25000, 209700, 'SUMMER20', 1498000, 'vnpay', 'paid', 890, 0, 'Trần Văn Minh', '0912345678', 'Phường 10', 'Quận 10', 'TP.HCM', '2026-03-05 14:20:00'),
+('ORD-20260310-003', 4, 'shipped', 'Lê Hoài Trang', 'trang.le@email.com', '0934567890', '56 Lý Tự Trọng, Quận 1, TP.HCM', 'TP.HCM', 'Quận 1', '56 Lý Tự Trọng', 599000, 25000, 0, NULL, 624000, 'cod', 'paid', 180, 0, 'Lê Hoài Trang', '0934567890', 'Phường Bến Nghé', 'Quận 1', 'TP.HCM', '2026-03-10 09:15:00'),
+('ORD-20260315-004', 5, 'processing', 'Phạm Đức Anh', 'anh.pham@email.com', '0945678901', '89 Pasteur, Quận 3, TP.HCM', 'TP.HCM', 'Quận 3', '89 Pasteur', 1197000, 25000, 0, NULL, 1222000, 'cod', 'paid', 420, 0, 'Phạm Đức Anh', '0945678901', 'Phường 6', 'Quận 3', 'TP.HCM', '2026-03-15 16:45:00'),
+('ORD-20260320-005', 6, 'confirmed', 'Võ Thị Mai Hương', 'huong.vo@email.com', '0956789012', '123 Nguyễn Huệ, Quận 1, TP.HCM', 'TP.HCM', 'Quận 1', '123 Nguyễn Huệ', 699000, 25000, 50000, 'NEWCUSTOMER', 674000, 'momo', 'paid', 320, 0, 'Võ Thị Mai Hương', '0956789012', 'Phường Bến Nghé', 'Quận 1', 'TP.HCM', '2026-03-20 11:30:00'),
+('ORD-20260325-006', 7, 'pending', 'Hoàng Đức Mạnh', 'manh.hoang@email.com', '0967890123', '456 Trần Hưng Đạo, Quận 5, TP.HCM', 'TP.HCM', 'Quận 5', '456 Trần Hưng Đạo', 1697000, 25000, 0, NULL, 1722000, 'cod', 'unpaid', 750, 0, 'Hoàng Đức Mạnh', '0967890123', 'Phường 11', 'Quận 5', 'TP.HCM', '2026-03-25 08:20:00'),
+('ORD-20260401-007', 8, 'pending', 'Trương Thị Hạnh', 'hanh.truong@email.com', '0978901234', '789 Lê Lai, Quận 3, TP.HCM', 'TP.HCM', 'Quận 3', '789 Lê Lai', 997000, 25000, 0, NULL, 1022000, 'cod', 'unpaid', 210, 0, 'Trương Thị Hạnh', '0978901234', 'Phường 6', 'Quận 3', 'TP.HCM', '2026-04-01 16:30:00');
 
 -- =====================================================
 -- Seed: Order Items
@@ -747,6 +768,20 @@ INSERT INTO order_items (order_id, product_id, variant_id, product_name, product
 -- Order 7
 (7, 13, NULL, 'Áo Thun Nữ Basic Trơn', 'ATN-BASIC-002', 'https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=800&h=800&fit=crop', 'M', 'Trắng', 199000, 3, 0, 597000),
 (7, 30, NULL, 'Khăn Choàng Nữ Lụa Cao Cấp', 'KCN-LUA-001', 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=800&h=800&fit=crop', NULL, 'Kem', 299000, 1, 0, 299000);
+
+-- =====================================================
+-- Seed: Wishlists
+-- NOTE: uses product_id (not stock_quantity)
+-- =====================================================
+INSERT INTO wishlists (user_id, product_id, created_at) VALUES
+(2, 7, '2026-03-05 16:00:00'),
+(2, 18, '2026-03-10 10:00:00'),
+(3, 1, '2026-03-12 14:30:00'),
+(4, 11, '2026-03-15 09:00:00'),
+(5, 23, '2026-03-18 11:00:00'),
+(6, 15, '2026-03-20 15:00:00'),
+(7, 21, '2026-03-22 10:30:00'),
+(8, 32, '2026-04-01 08:00:00');
 
 -- =====================================================
 -- Seed: Reward Points
@@ -842,13 +877,13 @@ INSERT INTO news (title, slug, summary, content, thumbnail, author_name, categor
 -- =====================================================
 -- Seed: Contacts
 -- =====================================================
-INSERT INTO contacts (name, email, phone, subject, message, contact_type, priority, status, source, created_at) VALUES
-('Hoàng Văn Tuấn', 'tuan.hoang@email.com', '0909876543', 'Hỏi về sản phẩm', 'Tôi muốn hỏi về áo blazer nam size L có còn hàng không?', 'general', 'medium', 'new', 'website', '2026-03-01 10:00:00'),
-('Trần Thị Hương', 'huong.tran@email.com', '0912345679', 'Chính sách đổi trả', 'Tôi muốn đổi size áo croptop đã mua online. Sản phẩm còn nguyên tag.', 'general', 'high', 'in_progress', 'website', '2026-03-05 14:00:00'),
-('Lê Đức Minh', 'minh.le@email.com', '0987654321', 'Hợp tác kinh doanh', 'Tôi muốn hỏi về chương trình dropship của cửa hàng.', 'partnership', 'high', 'replied', 'email', '2026-03-10 09:00:00'),
-('Nguyễn Thu Hà', 'ha.nguyen@email.com', '0932198765', 'Kiểm tra đơn hàng', 'Tôi đã đặt đơn hàng ORD-20260301-001 cách đây 3 ngày.', 'general', 'low', 'resolved', 'website', '2026-03-15 16:00:00'),
-('Đặng Minh Châu', 'chau.dang@email.com', '0941234567', 'Tư vấn mua hàng', 'Tôi cần mua một bộ đồ đi tiệc cho mẹ, ngân sách khoảng 2 triệu.', 'general', 'medium', 'new', 'website', '2026-03-20 11:00:00'),
-('Công ty ABC', 'contact@abc.com', '02812345678', 'Bảo hành sản phẩm', 'Sản phẩm áo khoác bị hỏng zipper sau 1 tuần sử dụng.', 'warranty', 'urgent', 'assigned', 'email', '2026-03-25 15:00:00');
+INSERT INTO contacts (name, email, phone, subject, message, contact_type, priority, status, is_replied, source, created_at) VALUES
+('Hoàng Văn Tuấn', 'tuan.hoang@email.com', '0909876543', 'Hỏi về sản phẩm', 'Tôi muốn hỏi về áo blazer nam size L có còn hàng không?', 'general', 'medium', 'new', 0, 'website', '2026-03-01 10:00:00'),
+('Trần Thị Hương', 'huong.tran@email.com', '0912345679', 'Chính sách đổi trả', 'Tôi muốn đổi size áo croptop đã mua online. Sản phẩm còn nguyên tag.', 'general', 'high', 'in_progress', 0, 'website', '2026-03-05 14:00:00'),
+('Lê Đức Minh', 'minh.le@email.com', '0987654321', 'Hợp tác kinh doanh', 'Tôi muốn hỏi về chương trình dropship của cửa hàng.', 'partnership', 'high', 'replied', 1, 'email', '2026-03-10 09:00:00'),
+('Nguyễn Thu Hà', 'ha.nguyen@email.com', '0932198765', 'Kiểm tra đơn hàng', 'Tôi đã đặt đơn hàng ORD-20260301-001 cách đây 3 ngày.', 'general', 'low', 'resolved', 1, 'website', '2026-03-15 16:00:00'),
+('Đặng Minh Châu', 'chau.dang@email.com', '0941234567', 'Tư vấn mua hàng', 'Tôi cần mua một bộ đồ đi tiệc cho mẹ, ngân sách khoảng 2 triệu.', 'general', 'medium', 'new', 0, 'website', '2026-03-20 11:00:00'),
+('Công ty ABC', 'contact@abc.com', '02812345678', 'Bảo hành sản phẩm', 'Sản phẩm áo khoác bị hỏng zipper sau 1 tuần sử dụng.', 'warranty', 'urgent', 'assigned', 0, 'email', '2026-03-25 15:00:00');
 
 -- =====================================================
 -- Seed: Settings

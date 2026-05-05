@@ -12,7 +12,7 @@ USE clothing_store;
 -- =====================================================
 -- TABLE: warehouses
 -- =====================================================
-CREATE TABLE warehouses (
+CREATE TABLE IF NOT EXISTS warehouses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -24,12 +24,12 @@ CREATE TABLE warehouses (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_warehouses_code (code),
     INDEX idx_warehouses_active (is_active)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: suppliers
 -- =====================================================
-CREATE TABLE suppliers (
+CREATE TABLE IF NOT EXISTS suppliers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -47,12 +47,12 @@ CREATE TABLE suppliers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_suppliers_code (code),
     INDEX idx_suppliers_active (is_active)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: users
 -- =====================================================
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -63,6 +63,7 @@ CREATE TABLE users (
     role ENUM('user', 'admin', 'manager', 'staff') DEFAULT 'user',
     gender ENUM('male', 'female', 'other') DEFAULT NULL,
     birth_date DATE DEFAULT NULL,
+    member_level VARCHAR(20) DEFAULT 'Bronze',
     id_card VARCHAR(20) DEFAULT NULL,
     default_city VARCHAR(100) DEFAULT NULL,
     default_district VARCHAR(100) DEFAULT NULL,
@@ -78,12 +79,12 @@ CREATE TABLE users (
     INDEX idx_users_email (email),
     INDEX idx_users_role (role),
     INDEX idx_users_phone (phone)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: employees
 -- =====================================================
-CREATE TABLE employees (
+CREATE TABLE IF NOT EXISTS employees (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT DEFAULT NULL,
     employee_code VARCHAR(50) NOT NULL UNIQUE,
@@ -108,12 +109,31 @@ CREATE TABLE employees (
     INDEX idx_employees_user (user_id),
     INDEX idx_employees_active (is_active),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE: addresses
+-- =====================================================
+CREATE TABLE IF NOT EXISTS addresses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    ward VARCHAR(100) DEFAULT '',
+    district VARCHAR(100) DEFAULT '',
+    city VARCHAR(100) NOT NULL,
+    is_default TINYINT(1) DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user_default (user_id, is_default),
+    INDEX idx_user (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: categories
 -- =====================================================
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL UNIQUE,
@@ -130,12 +150,12 @@ CREATE TABLE categories (
     INDEX idx_categories_parent (parent_id),
     INDEX idx_categories_sort (sort_order),
     FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: brands
 -- =====================================================
-CREATE TABLE brands (
+CREATE TABLE IF NOT EXISTS brands (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL UNIQUE,
@@ -149,12 +169,12 @@ CREATE TABLE brands (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_brands_slug (slug),
     INDEX idx_brands_active (is_active)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: sizes
 -- =====================================================
-CREATE TABLE sizes (
+CREATE TABLE IF NOT EXISTS sizes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(20) NOT NULL UNIQUE,
     code VARCHAR(10) DEFAULT NULL,
@@ -164,12 +184,12 @@ CREATE TABLE sizes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_sizes_sort (sort_order),
     INDEX idx_sizes_group (group_name)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: colors
 -- =====================================================
-CREATE TABLE colors (
+CREATE TABLE IF NOT EXISTS colors (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     code VARCHAR(20) DEFAULT NULL,
@@ -178,12 +198,13 @@ CREATE TABLE colors (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_colors_sort (sort_order)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: products
+-- NOTE: image is stored in product_images table, NOT in products.image_url
 -- =====================================================
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
@@ -226,12 +247,13 @@ CREATE TABLE products (
     FULLTEXT idx_products_search (name, short_description, description),
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: product_images
+-- NOTE: All product images are stored here, NOT in products.image_url
 -- =====================================================
-CREATE TABLE product_images (
+CREATE TABLE IF NOT EXISTS product_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     url VARCHAR(500) NOT NULL,
@@ -243,12 +265,12 @@ CREATE TABLE product_images (
     INDEX idx_images_product (product_id),
     INDEX idx_images_sort (product_id, sort_order),
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: product_variants
 -- =====================================================
-CREATE TABLE product_variants (
+CREATE TABLE IF NOT EXISTS product_variants (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     size_id INT DEFAULT NULL,
@@ -270,43 +292,12 @@ CREATE TABLE product_variants (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     FOREIGN KEY (size_id) REFERENCES sizes(id) ON DELETE SET NULL,
     FOREIGN KEY (color_id) REFERENCES colors(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
-
--- =====================================================
--- TABLE: product_reviews
--- =====================================================
-CREATE TABLE product_reviews (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
-    user_id INT NOT NULL,
-    order_id INT DEFAULT NULL,
-    rating TINYINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
-    title VARCHAR(255) DEFAULT NULL,
-    content TEXT DEFAULT NULL,
-    pros TEXT DEFAULT NULL,
-    cons TEXT DEFAULT NULL,
-    size_rating ENUM('too_small', 'small', 'fit', 'large', 'too_large') DEFAULT 'fit',
-    images JSON DEFAULT NULL,
-    is_verified_purchase BOOLEAN DEFAULT FALSE,
-    is_approved BOOLEAN DEFAULT FALSE,
-    admin_reply TEXT DEFAULT NULL,
-    replied_at TIMESTAMP DEFAULT NULL,
-    helpful_count INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_reviews_product (product_id),
-    INDEX idx_reviews_user (user_id),
-    INDEX idx_reviews_rating (rating),
-    INDEX idx_reviews_approved (is_approved),
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: orders
 -- =====================================================
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_number VARCHAR(50) NOT NULL UNIQUE,
     user_id INT DEFAULT NULL,
@@ -355,6 +346,13 @@ CREATE TABLE orders (
     cancelled_at TIMESTAMP DEFAULT NULL,
     cancel_reason VARCHAR(500) DEFAULT NULL,
     cancel_by INT DEFAULT NULL,
+    recipient_name VARCHAR(100) DEFAULT NULL,
+    recipient_phone VARCHAR(20) DEFAULT NULL,
+    ward VARCHAR(100) DEFAULT NULL,
+    district VARCHAR(100) DEFAULT NULL,
+    city VARCHAR(100) DEFAULT NULL,
+    note TEXT DEFAULT NULL,
+    coupon_code VARCHAR(50) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_orders_number (order_number),
@@ -365,12 +363,45 @@ CREATE TABLE orders (
     INDEX idx_orders_assigned (assigned_employee_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     FOREIGN KEY (assigned_employee_id) REFERENCES employees(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLE: product_reviews
+-- =====================================================
+CREATE TABLE IF NOT EXISTS product_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    user_id INT NOT NULL,
+    order_id INT DEFAULT NULL,
+    rating TINYINT NOT NULL,
+    title VARCHAR(255) DEFAULT NULL,
+    content TEXT DEFAULT NULL,
+    pros TEXT DEFAULT NULL,
+    cons TEXT DEFAULT NULL,
+    size_rating ENUM('too_small', 'small', 'fit', 'large', 'too_large') DEFAULT 'fit',
+    images JSON DEFAULT NULL,
+    is_verified_purchase BOOLEAN DEFAULT FALSE,
+    is_approved BOOLEAN DEFAULT FALSE,
+    admin_reply TEXT DEFAULT NULL,
+    replied_at TIMESTAMP DEFAULT NULL,
+    helpful_count INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_reviews_product (product_id),
+    INDEX idx_reviews_user (user_id),
+    INDEX idx_reviews_rating (rating),
+    INDEX idx_reviews_approved (is_approved),
+    INDEX idx_reviews_active (is_active),
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: order_items
 -- =====================================================
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     product_id INT DEFAULT NULL,
@@ -401,12 +432,12 @@ CREATE TABLE order_items (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL,
     FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE SET NULL,
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: cart_items
 -- =====================================================
-CREATE TABLE cart_items (
+CREATE TABLE IF NOT EXISTS cart_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     session_id VARCHAR(100) DEFAULT NULL,
     user_id INT DEFAULT NULL,
@@ -424,30 +455,25 @@ CREATE TABLE cart_items (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- TABLE: wishlist
+-- TABLE: wishlists
 -- =====================================================
-CREATE TABLE wishlist (
+CREATE TABLE IF NOT EXISTS wishlists (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     product_id INT NOT NULL,
-    variant_id INT DEFAULT NULL,
-    note VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_wishlist_user (user_id),
     INDEX idx_wishlist_product (product_id),
-    UNIQUE KEY unique_wishlist_item (user_id, product_id, variant_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+    UNIQUE KEY unique_wishlist_item (user_id, product_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: coupons
 -- =====================================================
-CREATE TABLE coupons (
+CREATE TABLE IF NOT EXISTS coupons (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(100) DEFAULT NULL,
@@ -477,12 +503,12 @@ CREATE TABLE coupons (
     INDEX idx_coupons_code (code),
     INDEX idx_coupons_valid (valid_from, valid_until),
     INDEX idx_coupons_active (is_active)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: coupon_usage
 -- =====================================================
-CREATE TABLE coupon_usage (
+CREATE TABLE IF NOT EXISTS coupon_usage (
     id INT AUTO_INCREMENT PRIMARY KEY,
     coupon_id INT NOT NULL,
     user_id INT NOT NULL,
@@ -496,12 +522,12 @@ CREATE TABLE coupon_usage (
     FOREIGN KEY (coupon_id) REFERENCES coupons(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: promotions
 -- =====================================================
-CREATE TABLE promotions (
+CREATE TABLE IF NOT EXISTS promotions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     slug VARCHAR(200) NOT NULL UNIQUE,
@@ -537,12 +563,12 @@ CREATE TABLE promotions (
     INDEX idx_promotions_valid (valid_from, valid_until),
     INDEX idx_promotions_active (is_active),
     FOREIGN KEY (get_product_id) REFERENCES products(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: reward_points
 -- =====================================================
-CREATE TABLE reward_points (
+CREATE TABLE IF NOT EXISTS reward_points (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     points INT NOT NULL,
@@ -561,12 +587,12 @@ CREATE TABLE reward_points (
     INDEX idx_points_expires (expires_at),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: stock_movements
 -- =====================================================
-CREATE TABLE stock_movements (
+CREATE TABLE IF NOT EXISTS stock_movements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     variant_id INT DEFAULT NULL,
@@ -607,12 +633,12 @@ CREATE TABLE stock_movements (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL,
     FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: return_requests
 -- =====================================================
-CREATE TABLE return_requests (
+CREATE TABLE IF NOT EXISTS return_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
     request_code VARCHAR(50) NOT NULL UNIQUE,
     order_id INT NOT NULL,
@@ -653,12 +679,12 @@ CREATE TABLE return_requests (
     FOREIGN KEY (processed_by) REFERENCES employees(id) ON DELETE SET NULL,
     FOREIGN KEY (exchange_product_id) REFERENCES products(id) ON DELETE SET NULL,
     FOREIGN KEY (exchange_variant_id) REFERENCES product_variants(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: news
 -- =====================================================
-CREATE TABLE news (
+CREATE TABLE IF NOT EXISTS news (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
@@ -683,12 +709,12 @@ CREATE TABLE news (
     INDEX idx_news_published (is_published, published_at),
     INDEX idx_news_featured (is_featured),
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: contacts
 -- =====================================================
-CREATE TABLE contacts (
+CREATE TABLE IF NOT EXISTS contacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -701,6 +727,7 @@ CREATE TABLE contacts (
     assigned_to INT DEFAULT NULL,
     admin_reply TEXT DEFAULT NULL,
     replied_at TIMESTAMP DEFAULT NULL,
+    is_replied BOOLEAN DEFAULT FALSE,
     source ENUM('website', 'phone', 'email', 'social', 'in_person', 'other') DEFAULT 'website',
     ip_address VARCHAR(45) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -711,12 +738,12 @@ CREATE TABLE contacts (
     INDEX idx_contacts_email (email),
     INDEX idx_contacts_created (created_at),
     FOREIGN KEY (assigned_to) REFERENCES employees(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: settings
 -- =====================================================
-CREATE TABLE settings (
+CREATE TABLE IF NOT EXISTS settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(100) NOT NULL UNIQUE,
     setting_value TEXT DEFAULT NULL,
@@ -726,12 +753,12 @@ CREATE TABLE settings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_settings_key (setting_key),
     INDEX idx_settings_group (group_name)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: shipping_providers
 -- =====================================================
-CREATE TABLE shipping_providers (
+CREATE TABLE IF NOT EXISTS shipping_providers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -746,12 +773,12 @@ CREATE TABLE shipping_providers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_providers_code (code),
     INDEX idx_providers_active (is_active)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: shipping_zones
 -- =====================================================
-CREATE TABLE shipping_zones (
+CREATE TABLE IF NOT EXISTS shipping_zones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     cities JSON NOT NULL,
@@ -759,12 +786,12 @@ CREATE TABLE shipping_zones (
     sort_order INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: shipping_fees
 -- =====================================================
-CREATE TABLE shipping_fees (
+CREATE TABLE IF NOT EXISTS shipping_fees (
     id INT AUTO_INCREMENT PRIMARY KEY,
     provider_id INT NOT NULL,
     zone_id INT NOT NULL,
@@ -779,12 +806,12 @@ CREATE TABLE shipping_fees (
     INDEX idx_fees_zone (zone_id),
     FOREIGN KEY (provider_id) REFERENCES shipping_providers(id) ON DELETE CASCADE,
     FOREIGN KEY (zone_id) REFERENCES shipping_zones(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: payment_methods
 -- =====================================================
-CREATE TABLE payment_methods (
+CREATE TABLE IF NOT EXISTS payment_methods (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
@@ -798,12 +825,12 @@ CREATE TABLE payment_methods (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_payment_code (code),
     INDEX idx_payment_active (is_active)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: supplier_orders
 -- =====================================================
-CREATE TABLE supplier_orders (
+CREATE TABLE IF NOT EXISTS supplier_orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_code VARCHAR(50) NOT NULL UNIQUE,
     supplier_id INT NOT NULL,
@@ -830,12 +857,12 @@ CREATE TABLE supplier_orders (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE,
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE SET NULL,
     FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: supplier_order_items
 -- =====================================================
-CREATE TABLE supplier_order_items (
+CREATE TABLE IF NOT EXISTS supplier_order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     supplier_order_id INT NOT NULL,
     product_id INT NOT NULL,
@@ -859,12 +886,12 @@ CREATE TABLE supplier_order_items (
     FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE SET NULL,
     FOREIGN KEY (size_id) REFERENCES sizes(id) ON DELETE SET NULL,
     FOREIGN KEY (color_id) REFERENCES colors(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: expense_categories
 -- =====================================================
-CREATE TABLE expense_categories (
+CREATE TABLE IF NOT EXISTS expense_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -875,12 +902,12 @@ CREATE TABLE expense_categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_expense_categories_code (code),
     FOREIGN KEY (parent_id) REFERENCES expense_categories(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: expenses
 -- =====================================================
-CREATE TABLE expenses (
+CREATE TABLE IF NOT EXISTS expenses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     expense_code VARCHAR(50) NOT NULL UNIQUE,
     category_id INT NOT NULL,
@@ -907,12 +934,12 @@ CREATE TABLE expenses (
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE SET NULL,
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL,
     FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: notifications
 -- =====================================================
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT DEFAULT NULL,
     type VARCHAR(50) NOT NULL,
@@ -928,12 +955,12 @@ CREATE TABLE notifications (
     INDEX idx_notifications_read (is_read),
     INDEX idx_notifications_created (created_at),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- TABLE: activity_logs
 -- =====================================================
-CREATE TABLE activity_logs (
+CREATE TABLE IF NOT EXISTS activity_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT DEFAULT NULL,
     action VARCHAR(100) NOT NULL,
@@ -950,4 +977,4 @@ CREATE TABLE activity_logs (
     INDEX idx_logs_entity (entity_type, entity_id),
     INDEX idx_logs_created (created_at),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

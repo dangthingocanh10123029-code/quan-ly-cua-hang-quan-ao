@@ -424,7 +424,7 @@ exports.getWishlist = async (req, res) => {
     const [items] = await db.query(
       `SELECT w.id as wishlist_id, w.created_at as added_at,
               p.id, p.name, p.slug, p.price, p.compare_price,
-              p.stock_quantity, p.is_active,
+              p.stock, p.is_active,
               (SELECT url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url
        FROM wishlists w
        JOIN products p ON w.product_id = p.id
